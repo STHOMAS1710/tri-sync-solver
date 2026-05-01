@@ -443,6 +443,12 @@ export function computeStatements(scenario: GeneratedScenario): ComputedStatemen
   const initial = tbToBalances(scenario.trialBalance);
   const openingInv = get(initial, "Inventory");
   const adjusted = applyAdjustments(initial, scenario.adjustments);
+  // Dividends paid in cash during the year (Dr Retained Earnings / Cr Bank).
+  // Recorded internally so SFP cash reflects the outflow; SOCE handles the
+  // RE side directly via openingRE + profit - dividends.
+  if (scenario.dividendsPaid > 0) {
+    adjusted["Bank"] = (adjusted["Bank"] ?? 0) - scenario.dividendsPaid;
+  }
 
   // ---- Income Statement (P&L) ----
   const revenue = -get(adjusted, "Sales"); // Sales is Cr-natured (negative)
