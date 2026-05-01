@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as RatiosRouteImport } from './routes/ratios'
 import { Route as QuestionRouteImport } from './routes/question'
 import { Route as CashflowRouteImport } from './routes/cashflow'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RatiosRoute = RatiosRouteImport.update({
+  id: '/ratios',
+  path: '/ratios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuestionRoute = QuestionRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cashflow': typeof CashflowRoute
   '/question': typeof QuestionRoute
+  '/ratios': typeof RatiosRoute
   '/setup': typeof SetupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cashflow': typeof CashflowRoute
   '/question': typeof QuestionRoute
+  '/ratios': typeof RatiosRoute
   '/setup': typeof SetupRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cashflow': typeof CashflowRoute
   '/question': typeof QuestionRoute
+  '/ratios': typeof RatiosRoute
   '/setup': typeof SetupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cashflow' | '/question' | '/setup'
+  fullPaths: '/' | '/cashflow' | '/question' | '/ratios' | '/setup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cashflow' | '/question' | '/setup'
-  id: '__root__' | '/' | '/cashflow' | '/question' | '/setup'
+  to: '/' | '/cashflow' | '/question' | '/ratios' | '/setup'
+  id: '__root__' | '/' | '/cashflow' | '/question' | '/ratios' | '/setup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CashflowRoute: typeof CashflowRoute
   QuestionRoute: typeof QuestionRoute
+  RatiosRoute: typeof RatiosRoute
   SetupRoute: typeof SetupRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ratios': {
+      id: '/ratios'
+      path: '/ratios'
+      fullPath: '/ratios'
+      preLoaderRoute: typeof RatiosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/question': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CashflowRoute: CashflowRoute,
   QuestionRoute: QuestionRoute,
+  RatiosRoute: RatiosRoute,
   SetupRoute: SetupRoute,
 }
 export const routeTree = rootRouteImport
