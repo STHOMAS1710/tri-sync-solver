@@ -1,11 +1,7 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  base: '/',
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-    },
+  vite: {
+    base: "/",
   },
-})
+});
