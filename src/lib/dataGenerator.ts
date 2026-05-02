@@ -229,7 +229,7 @@ const debentureInterest =
     { name: "Bank", debit: bank, credit: 0 },
     { name: "Payables", debit: 0, credit: payables },
     { name: "Income tax payable", debit: 0, credit: incomeTaxPayable },
-    { name: "8% Debentures", debit: 0, credit: debentures },
+    { name: `${debentureRate}% Debentures`, debit: 0, credit: debentures },
     { name: "Ordinary shares (fully paid)", debit: 0, credit: shareCapital },
     { name: "Retained earnings", debit: 0, credit: openingRetainedEarnings },
   ].filter((a) => a.debit !== 0 || a.credit !== 0);
