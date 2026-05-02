@@ -87,11 +87,10 @@ function RatiosPage() {
             <div className="space-y-4">
               {c.items.map((r, j) => (
                 <div key={j} className="border border-border rounded-lg p-4 bg-secondary/30">
-                  <div className="mb-3">
+                  <div>
                     <h4 className="font-semibold">{r.name}</h4>
                     <p className="text-sm text-muted-foreground">{r.formula}</p>
                   </div>
-                  <input type="text" placeholder="Your answer..." className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
               ))}
             </div>
