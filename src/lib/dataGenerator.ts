@@ -268,73 +268,76 @@ function generateAdjustments(
     ],
   });
 
-  // 2-4. Depreciation
+  // Candidate adjustments — randomly select enough to hit the exact target
+  // range for each difficulty level: Easy 3-4, Medium 5-6, Hard 6-7.
   const depB = Math.round(meta.nca.buildings * 0.02);
   const depP = Math.round(meta.nca.plant * 0.10);
   const depV = Math.round(meta.nca.vehicles * 0.20);
-  adjs.push({
-    description: `Depreciation: buildings 2% straight-line on cost (£${depB}k).`,
-    type: "depreciation",
-    entries: [{
-      debitAccount: "Depreciation - Buildings", debitAmount: depB,
-      creditAccount: "Accumulated depreciation - Buildings", creditAmount: depB,
-    }],
-  });
-  adjs.push({
-    description: `Depreciation: plant & machinery 10% straight-line on cost (£${depP}k).`,
-    type: "depreciation",
-    entries: [{
-      debitAccount: "Depreciation - Plant and machinery", debitAmount: depP,
-      creditAccount: "Accumulated depreciation - Plant and machinery", creditAmount: depP,
-    }],
-  });
-  adjs.push({
-    description: `Depreciation: motor vehicles 20% straight-line on cost (£${depV}k).`,
-    type: "depreciation",
-    entries: [{
-      debitAccount: "Depreciation - Motor vehicles", debitAmount: depV,
-      creditAccount: "Accumulated depreciation - Motor vehicles", creditAmount: depV,
-    }],
-  });
-
-  // 5. Accrued wages
-  if (adjs.length < target) {
-    const accr = rand(40, 180);
-    adjs.push({
+  const accr = rand(40, 180);
+  const prep = rand(30, 120);
+  const allowanceIncrease = Math.round(meta.receivables * (0.01 + Math.random() * 0.02));
+  const taxAccrual = rand(90, 260);
+  const candidates: Adjustment[] = [
+    {
+      description: `Depreciation: buildings 2% straight-line on cost (£${depB}k).`,
+      type: "depreciation",
+      entries: [{
+        debitAccount: "Depreciation - Buildings", debitAmount: depB,
+        creditAccount: "Accumulated depreciation - Buildings", creditAmount: depB,
+      }],
+    },
+    {
+      description: `Depreciation: plant & machinery 10% straight-line on cost (£${depP}k).`,
+      type: "depreciation",
+      entries: [{
+        debitAccount: "Depreciation - Plant and machinery", debitAmount: depP,
+        creditAccount: "Accumulated depreciation - Plant and machinery", creditAmount: depP,
+      }],
+    },
+    {
+      description: `Depreciation: motor vehicles 20% straight-line on cost (£${depV}k).`,
+      type: "depreciation",
+      entries: [{
+        debitAccount: "Depreciation - Motor vehicles", debitAmount: depV,
+        creditAccount: "Accumulated depreciation - Motor vehicles", creditAmount: depV,
+      }],
+    },
+    {
       description: `Wages of £${accr}k were accrued at year-end.`,
       type: "accrual",
       entries: [{
         debitAccount: "Wages and salaries", debitAmount: accr,
         creditAccount: "Accrued expenses", creditAmount: accr,
       }],
-    });
-  }
-
-  // 6. Prepaid insurance (admin)
-  if (adjs.length < target) {
-    const prep = rand(30, 120);
-    adjs.push({
+    },
+    {
       description: `Insurance of £${prep}k included in administrative expenses was prepaid.`,
       type: "prepayment",
       entries: [{
         debitAccount: "Prepayments", debitAmount: prep,
         creditAccount: "Administrative expenses", creditAmount: prep,
       }],
-    });
-  }
-
-  // 7. Increase in allowance for receivables
-  if (adjs.length < target) {
-    const inc = Math.round(meta.receivables * (0.01 + Math.random() * 0.02));
-    adjs.push({
-      description: `Allowance for receivables to be increased by £${inc}k.`,
+    },
+    {
+      description: `Allowance for receivables to be increased by £${allowanceIncrease}k.`,
       type: "allowance",
       entries: [{
-        debitAccount: "Bad debt expense", debitAmount: inc,
-        creditAccount: "Allowance for receivables", creditAmount: inc,
+        debitAccount: "Bad debt expense", debitAmount: allowanceIncrease,
+        creditAccount: "Allowance for receivables", creditAmount: allowanceIncrease,
       }],
-    });
-  }
+    },
+    {
+      description: `Income tax for the year was estimated to be a further £${taxAccrual}k.`,
+      type: "tax",
+      entries: [{
+        debitAccount: "Income tax expense", debitAmount: taxAccrual,
+        creditAccount: "Income tax payable", creditAmount: taxAccrual,
+      }],
+    },
+  ];
+  candidates.sort(() => Math.random() - 0.5);
+
+  adjs.push(...candidates.slice(0, target - adjs.length));
 
   // Dividends actually paid in cash during the year (affect SOCE only).
   const dividendsPaid = Math.random() > 0.4 ? rand(80, 250) : 0;

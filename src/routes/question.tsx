@@ -25,6 +25,29 @@ function fmt(n: number): string {
   return n < 0 ? `(${abs})` : abs;
 }
 
+function getAdjustmentHint(adjustment: GeneratedScenario["adjustments"][number]): string {
+  const firstEntry = adjustment.entries[0];
+
+  switch (adjustment.type) {
+    case "closingInventory":
+      return "Use closing inventory in the SFP and deduct it from purchases when calculating cost of sales.";
+    case "depreciation":
+      return `Charge the expense to profit or loss, then increase the related accumulated depreciation account.`;
+    case "accrual":
+      return `Increase the expense and recognise a current liability for the unpaid amount.`;
+    case "prepayment":
+      return `Remove the prepaid amount from the expense and show it as a current asset.`;
+    case "allowance":
+      return `Record the increase as an expense and deduct the allowance from receivables in the SFP.`;
+    case "tax":
+      return `Add the extra tax to income tax expense and recognise the unpaid amount as tax payable.`;
+    case "disposal":
+      return `Remove the asset cost and accumulated depreciation, then record any profit or loss on disposal.`;
+    default:
+      return `Think in double-entry terms: Dr ${firstEntry.debitAccount}, Cr ${firstEntry.creditAccount}.`;
+  }
+}
+
 function QuestionPage() {
   const navigate = useNavigate();
   const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
@@ -143,6 +166,11 @@ function QuestionPage() {
                     <span className="font-medium">{a.description}</span>
                     {hintsEnabled && <Lightbulb className="w-4 h-4 text-primary flex-shrink-0 mt-1" />}
                   </div>
+                  {hintsEnabled && (
+                    <div className="mb-3 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-muted-foreground">
+                      <span className="font-semibold text-primary">Hint:</span> {getAdjustmentHint(a)}
+                    </div>
+                  )}
                   {showAnswer && (
                     <div className="bg-background rounded p-3 font-mono text-sm space-y-1 border border-border/40">
                       {a.entries.map((e, j) => (
