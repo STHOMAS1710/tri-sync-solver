@@ -334,7 +334,8 @@ function generateAdjustments(
         creditAccount: "Income tax payable", creditAmount: taxAccrual,
       }],
     },
-  ].sort(() => Math.random() - 0.5);
+  ];
+  candidates.sort(() => Math.random() - 0.5);
 
   adjs.push(...candidates.slice(0, target - adjs.length));
 
