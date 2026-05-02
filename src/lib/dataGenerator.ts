@@ -251,7 +251,7 @@ function generateAdjustments(
   const adjs: Adjustment[] = [];
 
   const target =
-    difficulty === "easy" ? rand(2, 3) : difficulty === "medium" ? rand(4, 5) : rand(5, 6);
+    difficulty === "easy" ? rand(3, 4) : difficulty === "medium" ? rand(5, 6) : rand(6, 7);
 
   // 1. Closing inventory — Dr Inventory / Cr Cost of sales (purchases adj)
   const closingInv = Math.round(meta.openingInventory * (0.7 + Math.random() * 0.4));
