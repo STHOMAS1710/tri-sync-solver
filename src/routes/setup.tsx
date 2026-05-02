@@ -33,9 +33,9 @@ function SetupPage() {
   };
 
   const options: { value: Difficulty; label: string; description: string; icon: string }[] = [
-    { value: "easy", label: "Easy", description: "2–3 adjustments\nSimpler accounts", icon: "🌱" },
-    { value: "medium", label: "Medium", description: "4–5 adjustments\nBalanced complexity", icon: "📊" },
-    { value: "hard", label: "Hard", description: "5–6 adjustments\nAdvanced scenarios", icon: "🚀" },
+    { value: "easy", label: "Easy", description: "3–4 adjustments\nSimpler accounts", icon: "🌱" },
+    { value: "medium", label: "Medium", description: "5–6 adjustments\nBalanced complexity", icon: "📊" },
+    { value: "hard", label: "Hard", description: "6–7 adjustments\nAdvanced scenarios", icon: "🚀" },
   ];
 
   return (
