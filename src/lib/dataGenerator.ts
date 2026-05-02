@@ -155,6 +155,8 @@ const debentureInterest =
   difficulty === "easy"
     ? 0
     : Math.round(debentures * (debentureRate / 100));
+
+  const debentureLabel = `${debentureRate}% Debentures`;
   
   const incomeTaxPaidInYear = rand(100, 300) * scale; // already paid -> debit
 
@@ -229,7 +231,7 @@ const debentureInterest =
     { name: "Bank", debit: bank, credit: 0 },
     { name: "Payables", debit: 0, credit: payables },
     { name: "Income tax payable", debit: 0, credit: incomeTaxPayable },
-    { name: `${debentureRate}% Debentures`, debit: 0, credit: debentures },
+    { name: debentureLabel, debit: 0, credit: debentures },
     { name: "Ordinary shares (fully paid)", debit: 0, credit: shareCapital },
     { name: "Retained earnings", debit: 0, credit: openingRetainedEarnings },
   ].filter((a) => a.debit !== 0 || a.credit !== 0);
