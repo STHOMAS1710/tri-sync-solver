@@ -58,9 +58,9 @@ function SetupPage() {
                 <button
                   key={option.value}
                   onClick={() => setDifficulty(option.value)}
-                  className={`p-6 rounded-lg border-2 transition-all text-center ${
+                  className={`difficulty-card p-6 rounded-lg border-2 transition-all text-center ${
                     difficulty === option.value
-                      ? "border-primary bg-secondary"
+                      ? "selected border-primary bg-secondary"
                       : "border-border hover:border-primary/50"
                   }`}
                 >
