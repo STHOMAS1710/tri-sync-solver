@@ -84,7 +84,7 @@ const ACCOUNT_NATURE: Record<string, Nature> = {
   "Accumulated depreciation - Motor vehicles": "contraAsset",
   "Allowance for receivables": "contraAsset",
   // SFP — Liabilities
-  "8% Debentures": "liability",
+  [`${debentureRate}% Debentures`]: "liability",
   Payables: "liability",
   "Accrued expenses": "liability",
   "Income tax payable": "liability",
@@ -146,7 +146,16 @@ function buildTrialBalance(difficulty: Difficulty): {
   const wages = Math.round(sales * (0.08 + Math.random() * 0.05));
   const admin = Math.round(sales * (0.04 + Math.random() * 0.04));
   const lightHeat = Math.round(sales * (0.01 + Math.random() * 0.02));
-  const debentureInterest = difficulty === "easy" ? 0 : rand(80, 200) * scale;
+  const debentures = difficulty === "easy" ? 0 : rand(1000, 2500) * scale;
+
+const debentureRate =
+  difficulty === "easy" ? 0 : Math.floor(Math.random() * 12) + 1;
+
+const debentureInterest =
+  difficulty === "easy"
+    ? 0
+    : Math.round(debentures * (debentureRate / 100));
+  
   const incomeTaxPaidInYear = rand(100, 300) * scale; // already paid -> debit
 
   // --- SFP figures (opening balances) ---
@@ -161,7 +170,6 @@ function buildTrialBalance(difficulty: Difficulty): {
   const receivables = rand(500, 1100) * scale;
   const allowanceForReceivables = Math.round(receivables * (0.03 + Math.random() * 0.04));
 
-  const debentures = difficulty === "easy" ? 0 : rand(1000, 2500) * scale;
   const payables = rand(400, 900) * scale;
   const incomeTaxPayable = rand(80, 250) * scale;
 
