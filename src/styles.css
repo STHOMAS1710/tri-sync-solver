@@ -268,3 +268,99 @@ h2 {
   letter-spacing: -0.03em;
   overflow-wrap: break-word;
 }
+
+/* --- Final UI polish --- */
+
+.ledger-card {
+  padding: 2rem !important;
+  border: 2px solid rgba(139, 92, 246, 0.45) !important;
+  border-radius: 1.25rem !important;
+  background: rgba(8, 7, 13, 0.96) !important;
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.08);
+  margin-bottom: 2rem;
+}
+
+/* Space out difficulty boxes */
+.grid {
+  gap: 1.5rem !important;
+}
+
+.difficulty-card {
+  min-height: 12rem;
+  padding: 1.75rem !important;
+  border: 2px solid rgba(139, 92, 246, 0.42) !important;
+  border-radius: 1.25rem !important;
+  background: #08070d !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.difficulty-card.selected {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+  border-color: #c4b5fd !important;
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.4);
+}
+
+/* Cleaner headings inside cards */
+.ledger-card h2 {
+  margin-bottom: 1.75rem;
+  line-height: 1.15;
+}
+
+/* Hint mode layout */
+.ledger-card:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Toggle switch */
+input[type="checkbox"] {
+  appearance: none !important;
+  width: 68px !important;
+  height: 38px !important;
+  min-width: 68px !important;
+  border-radius: 999px !important;
+  background: #52525b !important;
+  border: 2px solid rgba(255, 255, 255, 0.12) !important;
+  position: relative !important;
+  cursor: pointer;
+  padding: 0 !important;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* White circle */
+input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  top: 3px;
+  left: 4px;
+  border-radius: 999px;
+  background: white;
+  transition: transform 0.2s ease;
+}
+
+/* ON */
+input[type="checkbox"]:checked {
+  background: #8b5cf6 !important;
+  border-color: #a78bfa !important;
+}
+
+input[type="checkbox"]:checked::after {
+  transform: translateX(28px);
+}
+
+/* OFF */
+input[type="checkbox"]:not(:checked) {
+  background: #52525b !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+input[type="checkbox"]:not(:checked)::after {
+  transform: translateX(0);
+}
