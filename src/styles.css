@@ -364,3 +364,66 @@ input[type="checkbox"]:not(:checked) {
 input[type="checkbox"]:not(:checked)::after {
   transform: translateX(0);
 }
+
+/* --- Fix hint toggle alignment/state --- */
+
+.ledger-card:has(input[type="checkbox"]) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Toggle track */
+.ledger-card input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  width: 72px !important;
+  height: 40px !important;
+  min-width: 72px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border-radius: 999px !important;
+  border: 2px solid rgba(139, 92, 246, 0.45) !important;
+
+  background: #050508 !important; /* OFF = black */
+  position: relative !important;
+  cursor: pointer;
+}
+
+/* White oval/circle */
+.ledger-card input[type="checkbox"]::after {
+  content: "" !important;
+  position: absolute !important;
+
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+
+  top: 50% !important;
+  left: 5px !important;
+
+  background: white !important;
+  transform: translateY(-50%) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* ON = purple, knob right */
+.ledger-card input[type="checkbox"]:checked {
+  background: #8b5cf6 !important;
+}
+
+.ledger-card input[type="checkbox"]:checked::after {
+  transform: translate(32px, -50%) !important;
+}
+
+/* OFF = black, knob left */
+.ledger-card input[type="checkbox"]:not(:checked) {
+  background: #050508 !important;
+}
+
+.ledger-card input[type="checkbox"]:not(:checked)::after {
+  transform: translate(0, -50%) !important;
+}
