@@ -31,6 +31,55 @@ function CashFlowPage() {
   const cell = (n: number) => <td className="ledger-figure">{n.toLocaleString()}</td>;
   const neg = (n: number) => <td className="ledger-figure">({n.toLocaleString()})</td>;
 
+  // ===== Worked Cash Flow Statement (Indirect Method) =====
+  const depreciation = info.depreciation?.amount ?? 0;
+  const disposalCost = info.assetDisposal?.cost ?? 0;
+  const disposalAccDepn = info.assetDisposal?.accumulatedDepreciation ?? 0;
+  const disposalProceeds = info.assetDisposal?.saleProceeds ?? 0;
+  const disposalNBV = disposalCost - disposalAccDepn;
+  const gainOnDisposal = disposalProceeds - disposalNBV; // +gain / -loss
+  const debenturesIssued = info.debentures?.amount ?? 0;
+  const dividendsPaid = info.dividends?.amount ?? 0;
+
+  // Working capital movements (increase in asset = outflow)
+  const dInventories = cy.currentAssets.inventories - py.currentAssets.inventories;
+  const dReceivables = cy.currentAssets.tradeReceivables - py.currentAssets.tradeReceivables;
+  const dPayables = cy.currentLiabilities.tradePayables - py.currentLiabilities.tradePayables;
+
+  // PPE additions: Closing cost = Opening cost - Disposal cost + Additions
+  const ppeAdditions =
+    cy.nonCurrentAssets.propertyPlantEquipmentCost -
+    py.nonCurrentAssets.propertyPlantEquipmentCost +
+    disposalCost;
+
+  // Tax paid: Opening tax payable + tax charge - Closing tax payable
+  const taxPaid =
+    py.currentLiabilities.taxPayable + pl.taxation - cy.currentLiabilities.taxPayable;
+
+  // Share issue proceeds (capital + premium movement)
+  const shareIssue =
+    (cy.equity.shareCapital - py.equity.shareCapital) +
+    (cy.equity.sharePremium - py.equity.sharePremium);
+
+  // Operating cash flow build-up
+  const opAdjusted =
+    pl.profitBeforeTax + depreciation + pl.financeExpenses - gainOnDisposal;
+  const cashFromOps =
+    opAdjusted - dInventories - dReceivables + dPayables;
+  const netOperating = cashFromOps - pl.financeExpenses - taxPaid;
+
+  // Investing
+  const netInvesting = -ppeAdditions + disposalProceeds;
+
+  // Financing
+  const netFinancing = shareIssue + debenturesIssued - dividendsPaid;
+
+  const netChangeInCash = netOperating + netInvesting + netFinancing;
+  const computedClosingCash = py.currentAssets.cashAtBank + netChangeInCash;
+
+  const fmt = (n: number) =>
+    n < 0 ? `(${Math.abs(n).toLocaleString()})` : n.toLocaleString();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="border-b border-border/30">
@@ -114,8 +163,94 @@ function CashFlowPage() {
 
         {showAnswer && (
           <div className="ledger-card">
-            <h3 className="text-xl font-bold mb-4">Answer outline</h3>
-            <p className="text-sm text-muted-foreground">A worked Cash Flow Statement (operating, investing, financing) will appear here using the comparative SFPs above.</p>
+            <h3 className="text-xl font-bold mb-4">
+              Answer — Cash Flow Statement (Indirect Method)
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              For the year ended 31 March {cy.year} (£k)
+            </p>
+            <table className="ledger-table">
+              <tbody>
+                <tr className="font-bold bg-secondary/50">
+                  <td colSpan={2}>Cash flows from operating activities</td>
+                </tr>
+                <tr><td>Profit before taxation</td><td className="ledger-figure">{fmt(pl.profitBeforeTax)}</td></tr>
+                <tr><td className="pl-4">Add: Depreciation</td><td className="ledger-figure">{fmt(depreciation)}</td></tr>
+                <tr><td className="pl-4">Add: Finance expenses</td><td className="ledger-figure">{fmt(pl.financeExpenses)}</td></tr>
+                {info.assetDisposal && (
+                  <tr>
+                    <td className="pl-4">{gainOnDisposal >= 0 ? "Less: Gain on disposal" : "Add: Loss on disposal"}</td>
+                    <td className="ledger-figure">{fmt(-gainOnDisposal)}</td>
+                  </tr>
+                )}
+                <tr className="font-semibold border-t border-border">
+                  <td>Operating profit before working capital changes</td>
+                  <td className="ledger-figure">{fmt(opAdjusted)}</td>
+                </tr>
+                <tr><td className="pl-4">{dInventories >= 0 ? "Increase" : "Decrease"} in inventories</td><td className="ledger-figure">{fmt(-dInventories)}</td></tr>
+                <tr><td className="pl-4">{dReceivables >= 0 ? "Increase" : "Decrease"} in receivables</td><td className="ledger-figure">{fmt(-dReceivables)}</td></tr>
+                <tr><td className="pl-4">{dPayables >= 0 ? "Increase" : "Decrease"} in payables</td><td className="ledger-figure">{fmt(dPayables)}</td></tr>
+                <tr className="font-semibold border-t border-border">
+                  <td>Cash generated from operations</td>
+                  <td className="ledger-figure">{fmt(cashFromOps)}</td>
+                </tr>
+                <tr><td className="pl-4">Interest paid</td><td className="ledger-figure">{fmt(-pl.financeExpenses)}</td></tr>
+                <tr><td className="pl-4">Tax paid</td><td className="ledger-figure">{fmt(-taxPaid)}</td></tr>
+                <tr className="font-bold border-t-2 border-foreground">
+                  <td>Net cash from operating activities</td>
+                  <td className="ledger-figure">{fmt(netOperating)}</td>
+                </tr>
+
+                <tr className="font-bold bg-secondary/50">
+                  <td colSpan={2}>Cash flows from investing activities</td>
+                </tr>
+                <tr><td className="pl-4">Purchase of PPE</td><td className="ledger-figure">{fmt(-ppeAdditions)}</td></tr>
+                {info.assetDisposal && (
+                  <tr><td className="pl-4">Proceeds from disposal of PPE</td><td className="ledger-figure">{fmt(disposalProceeds)}</td></tr>
+                )}
+                <tr className="font-bold border-t-2 border-foreground">
+                  <td>Net cash used in investing activities</td>
+                  <td className="ledger-figure">{fmt(netInvesting)}</td>
+                </tr>
+
+                <tr className="font-bold bg-secondary/50">
+                  <td colSpan={2}>Cash flows from financing activities</td>
+                </tr>
+                {shareIssue !== 0 && (
+                  <tr><td className="pl-4">Proceeds from share issue</td><td className="ledger-figure">{fmt(shareIssue)}</td></tr>
+                )}
+                {debenturesIssued !== 0 && (
+                  <tr><td className="pl-4">Proceeds from debenture issue</td><td className="ledger-figure">{fmt(debenturesIssued)}</td></tr>
+                )}
+                {dividendsPaid !== 0 && (
+                  <tr><td className="pl-4">Dividends paid</td><td className="ledger-figure">{fmt(-dividendsPaid)}</td></tr>
+                )}
+                <tr className="font-bold border-t-2 border-foreground">
+                  <td>Net cash from financing activities</td>
+                  <td className="ledger-figure">{fmt(netFinancing)}</td>
+                </tr>
+
+                <tr className="font-bold border-t-2 border-foreground">
+                  <td>Net increase / (decrease) in cash</td>
+                  <td className="ledger-figure">{fmt(netChangeInCash)}</td>
+                </tr>
+                <tr><td>Cash at beginning of year</td><td className="ledger-figure">{fmt(py.currentAssets.cashAtBank)}</td></tr>
+                <tr className="font-bold border-t-2 border-foreground">
+                  <td>Cash at end of year</td>
+                  <td className="ledger-figure">{fmt(computedClosingCash)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div className="mt-6 p-4 rounded-lg bg-secondary/30 border border-border text-sm space-y-2">
+              <p className="font-semibold">Workings</p>
+              <p><span className="font-medium">PPE additions:</span> Closing cost {cy.nonCurrentAssets.propertyPlantEquipmentCost.toLocaleString()} − Opening cost {py.nonCurrentAssets.propertyPlantEquipmentCost.toLocaleString()} + Disposal cost {disposalCost.toLocaleString()} = {ppeAdditions.toLocaleString()}</p>
+              <p><span className="font-medium">Tax paid:</span> Opening tax {py.currentLiabilities.taxPayable.toLocaleString()} + P&L charge {pl.taxation.toLocaleString()} − Closing tax {cy.currentLiabilities.taxPayable.toLocaleString()} = {taxPaid.toLocaleString()}</p>
+              {info.assetDisposal && (
+                <p><span className="font-medium">Gain/(loss) on disposal:</span> Proceeds {disposalProceeds.toLocaleString()} − NBV ({disposalCost.toLocaleString()} − {disposalAccDepn.toLocaleString()} = {disposalNBV.toLocaleString()}) = {gainOnDisposal.toLocaleString()}</p>
+              )}
+              <p><span className="font-medium">Reconciliation check:</span> Computed closing cash {computedClosingCash.toLocaleString()} vs SFP closing cash {cy.currentAssets.cashAtBank.toLocaleString()} (difference {(computedClosingCash - cy.currentAssets.cashAtBank).toLocaleString()} — arises because the comparative SFPs are randomly generated independently of the cash-flow movements).</p>
+            </div>
           </div>
         )}
       </div>
