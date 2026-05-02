@@ -84,7 +84,7 @@ const ACCOUNT_NATURE: Record<string, Nature> = {
   "Accumulated depreciation - Motor vehicles": "contraAsset",
   "Allowance for receivables": "contraAsset",
   // SFP — Liabilities
-  [`${debentureRate}% Debentures`]: "liability",
+  [debentureLabel]: "liability",
   Payables: "liability",
   "Accrued expenses": "liability",
   "Income tax payable": "liability",
