@@ -572,7 +572,8 @@ export function computeStatements(scenario: GeneratedScenario): ComputedStatemen
       total: debentureLiability,
     },
     currentLiabilities: { payables, accruals, taxPayable, total: totalCL },
-    totalEquityAndLiabilities: openingShareCapital + closingRE + debentures + totalCL,
+    totalEquityAndLiabilities:
+      openingShareCapital + closingRE + debentureLiability + totalCL,
   };
 
   return { adjustedBalances: adjusted, incomeStatement, soce, sfp };
