@@ -544,11 +544,11 @@ export function computeStatements(scenario: GeneratedScenario): ComputedStatemen
   const totalCA = inventory + netReceivables + prepayments + cash;
   const totalAssets = totalNCA + totalCA;
 
-  const debentures =
-    -Object.entries(adjusted).find(([name]) => name.endsWith("% Debentures")
+  const debentureEntry = Object.entries(adjusted).find(([name]) =>
+    name.endsWith("% Debentures")
   );
-  
-  const debentures = debentureEntry ? -debentureEntry[1] : 0;
+
+  const debentureLiability = debentureEntry ? -debentureEntry[1] : 0;
   
   const payables = -get(adjusted, "Payables");
   const accruals = -get(adjusted, "Accrued expenses");
@@ -567,7 +567,10 @@ export function computeStatements(scenario: GeneratedScenario): ComputedStatemen
       retainedEarnings: closingRE,
       total: openingShareCapital + closingRE,
     },
-    nonCurrentLiabilities: { debentures, total: debentures },
+    nonCurrentLiabilities: {
+      debentures: debentureLiability,
+      total: debentureLiability,
+    },
     currentLiabilities: { payables, accruals, taxPayable, total: totalCL },
     totalEquityAndLiabilities: openingShareCapital + closingRE + debentures + totalCL,
   };
