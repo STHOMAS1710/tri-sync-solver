@@ -545,7 +545,7 @@ export function computeStatements(scenario: GeneratedScenario): ComputedStatemen
   const totalAssets = totalNCA + totalCA;
 
   const debentureEntry = Object.entries(adjusted).find(([name]) =>
-    name.endsWith("% Debentures")
+    name.includes("Debentures")
   );
 
   const debentureLiability = debentureEntry ? -debentureEntry[1] : 0;
