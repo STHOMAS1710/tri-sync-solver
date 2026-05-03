@@ -149,7 +149,7 @@ function buildTrialBalance(difficulty: Difficulty): {
   const debentures = difficulty === "easy" ? 0 : rand(1000, 2500) * scale;
 
 const debentureRate =
-  difficulty === "easy" ? 0 : Math.floor(Math.random() * 12) + 1;
+  difficulty === "easy" ? 0 : Math.floor(Math.random() * 11) + 2;
 
 const debentureInterest =
   difficulty === "easy"
@@ -544,7 +544,12 @@ export function computeStatements(scenario: GeneratedScenario): ComputedStatemen
   const totalCA = inventory + netReceivables + prepayments + cash;
   const totalAssets = totalNCA + totalCA;
 
-  const debentures = -get(adjusted, "8% Debentures");
+  const debentures =
+    -Object.entries(adjusted).find(([name]) => name.endsWith("% Debentures")
+  );
+  
+  const debentures = debentureEntry ? -debentureEntry[1] : 0;
+  
   const payables = -get(adjusted, "Payables");
   const accruals = -get(adjusted, "Accrued expenses");
   // Tax payable on SFP = opening tax payable + tax expense booked - tax already paid?
