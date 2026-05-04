@@ -468,3 +468,84 @@ input[type="checkbox"]:not(:checked)::after {
 .hint-toggle.off .hint-toggle-knob {
   left: 5px !important;
 }
+
+/* --- Typography + centering polish --- */
+
+/* Stop the text from looking stretched */
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Syne", system-ui, sans-serif;
+  font-stretch: normal;
+  letter-spacing: -0.015em;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+/* Make normal text more readable */
+p,
+li,
+td,
+th {
+  letter-spacing: -0.005em;
+  line-height: 1.45;
+}
+
+/* Center main pages properly on large screens */
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Center the setup page content */
+.max-w-2xl {
+  max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Keep card groups balanced */
+.ledger-card {
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Center difficulty cards inside their row */
+.ledger-card .grid {
+  justify-items: center;
+  align-items: stretch;
+}
+
+/* Prevent card text from looking too compressed/stretched */
+.difficulty-card h3,
+.difficulty-card p {
+  max-width: 220px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Make big-screen layout feel centered */
+@media (min-width: 1024px) {
+  main,
+  .container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .ledger-card {
+    max-width: 1100px;
+  }
+}
