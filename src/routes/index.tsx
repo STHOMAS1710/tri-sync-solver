@@ -37,7 +37,7 @@ function Index() {
               Master Accounting
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              LedgerLab generates unlimited, randomised accounting practice questions. Every Trial Balance, P&amp;L, SOCE and SFP is mathematically linked and guaranteed to balance.
+              LedgerLab creates unlimited, randomised accounting practise questions to help you practise Trial Balances, Profit or Loss, SOCE and Statements of Financial Position, each scenario is realistic structured and flows clearly from start to finish. LedgerLab helps you sharpen your exam technique, and become a master of accounting. 
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
