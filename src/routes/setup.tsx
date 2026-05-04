@@ -86,11 +86,13 @@ function SetupPage() {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setHintsEnabled(!hintsEnabled)}
-                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  hintsEnabled ? "bg-primary" : "bg-secondary"
-                }`}
+                className={`hint-toggle ${hintsEnabled ? "on" : "off"}`}
+                aria-pressed={hintsEnabled}
               >
+                <span className="hint-toggle-knob" />
+              </button>
                 <span
                   className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
                     hintsEnabled ? "translate-x-7" : "translate-x-1"
