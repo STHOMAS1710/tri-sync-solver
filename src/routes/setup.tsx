@@ -93,12 +93,6 @@ function SetupPage() {
               >
                 <span className="hint-toggle-knob" />
               </button>
-                <span
-                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
-                    hintsEnabled ? "translate-x-7" : "translate-x-1"
-                  }`}
-                />
-              </button>
             </div>
           </div>
 
