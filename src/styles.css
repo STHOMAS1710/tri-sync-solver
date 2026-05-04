@@ -427,3 +427,44 @@ input[type="checkbox"]:not(:checked)::after {
 .ledger-card input[type="checkbox"]:not(:checked)::after {
   transform: translate(0, -50%) !important;
 }
+
+.hint-toggle {
+  width: 76px !important;
+  height: 42px !important;
+  min-width: 76px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  border: 2px solid rgba(139, 92, 246, 0.45) !important;
+  position: relative !important;
+  background: #050508 !important;
+  cursor: pointer !important;
+}
+
+.hint-toggle.on {
+  background: #8b5cf6 !important;
+  border-color: #c4b5fd !important;
+}
+
+.hint-toggle.off {
+  background: #050508 !important;
+}
+
+.hint-toggle-knob {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 999px !important;
+  background: white !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 5px !important;
+  transform: translateY(-50%) !important;
+  transition: left 0.2s ease !important;
+}
+
+.hint-toggle.on .hint-toggle-knob {
+  left: 39px !important;
+}
+
+.hint-toggle.off .hint-toggle-knob {
+  left: 5px !important;
+}
