@@ -549,3 +549,12 @@ th {
     max-width: 1100px;
   }
 }
+
+.site-logo-mark {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+}
