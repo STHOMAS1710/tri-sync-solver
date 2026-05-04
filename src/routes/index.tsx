@@ -20,9 +20,11 @@ function Index() {
       <nav className="border-b border-border/30">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-sm font-bold text-primary-foreground">LL</span>
-            </div>
+        <img
+          src="/logo.png"
+          alt="LedgerLab logo"
+          className="site-logo-mark"
+        />
             <span className="text-xl font-bold">LedgerLab</span>
           </div>
           <div className="text-sm text-muted-foreground">Accounting Revision Platform</div>
