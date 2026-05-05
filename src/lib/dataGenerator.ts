@@ -280,9 +280,13 @@ function generateAdjustments(
 
   // Candidate adjustments — randomly select enough to hit the exact target
   // range for each difficulty level: Easy 3-4, Medium 5-6, Hard 6-7.
-  const depB = Math.round(meta.nca.buildings * 0.02);
-  const depP = Math.round(meta.nca.plant * 0.10);
-  const depV = Math.round(meta.nca.vehicles * 0.20);
+  const buildingsDepRate = rand(1, 5);      // 1%–5%
+  const plantDepRate = rand(8, 20);         // 8%–20%
+  const vehiclesDepRate = rand(15, 30);     // 15%–30%
+
+  const depB = Math.round(meta.nca.buildings * (buildingsDepRate / 100));
+  const depP = Math.round(meta.nca.plant * (plantDepRate / 100));
+  const depV = Math.round(meta.nca.vehicles * (vehiclesDepRate / 100));
   const accr = rand(40, 180);
   const prep = rand(30, 120);
   const allowanceIncrease = Math.round(meta.receivables * (0.01 + Math.random() * 0.02));
