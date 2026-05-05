@@ -287,35 +287,45 @@ function generateAdjustments(
   const depB = Math.round(meta.nca.buildings * (buildingsDepRate / 100));
   const depP = Math.round(meta.nca.plant * (plantDepRate / 100));
   const depV = Math.round(meta.nca.vehicles * (vehiclesDepRate / 100));
+
+  adjs.push(
+  {
+    description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost.`,
+    type: "depreciation",
+    entries: [{
+      debitAccount: "Depreciation - Buildings",
+      debitAmount: depB,
+      creditAccount: "Accumulated depreciation - Buildings",
+      creditAmount: depB,
+    }],
+  },
+  {
+    description: `Depreciation: plant & machinery ${plantDepRate}% straight-line on cost.`,
+    type: "depreciation",
+    entries: [{
+      debitAccount: "Depreciation - Plant and machinery",
+      debitAmount: depP,
+      creditAccount: "Accumulated depreciation - Plant and machinery",
+      creditAmount: depP,
+    }],
+  },
+  {
+    description: `Depreciation: motor vehicles ${vehiclesDepRate}% straight-line on cost.`,
+    type: "depreciation",
+    entries: [{
+      debitAccount: "Depreciation - Motor vehicles",
+      debitAmount: depV,
+      creditAccount: "Accumulated depreciation - Motor vehicles",
+      creditAmount: depV,
+    }],
+  }
+);
+  
   const accr = rand(40, 180);
   const prep = rand(30, 120);
   const allowanceIncrease = Math.round(meta.receivables * (0.01 + Math.random() * 0.02));
   const taxAccrual = rand(90, 260);
   const candidates: Adjustment[] = [
-    {
-      description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost.`,
-      type: "depreciation",
-      entries: [{
-        debitAccount: "Depreciation - Buildings", debitAmount: depB,
-        creditAccount: "Accumulated depreciation - Buildings", creditAmount: depB,
-      }],
-    },
-    {
-      description: `Depreciation: plant & machinery ${plantDepRate}% straight-line on cost.`,
-      type: "depreciation",
-      entries: [{
-        debitAccount: "Depreciation - Plant and machinery", debitAmount: depP,
-        creditAccount: "Accumulated depreciation - Plant and machinery", creditAmount: depP,
-      }],
-    },
-    {
-      description: `Depreciation: motor vehicles ${vehiclesDepRate}% straight-line on cost.`,
-      type: "depreciation",
-      entries: [{
-        debitAccount: "Depreciation - Motor vehicles", debitAmount: depV,
-        creditAccount: "Accumulated depreciation - Motor vehicles", creditAmount: depV,
-      }],
-    },
     {
       description: `Wages of £${accr}k were accrued at year-end.`,
       type: "accrual",
@@ -351,7 +361,8 @@ function generateAdjustments(
   ];
   candidates.sort(() => Math.random() - 0.5);
 
-  adjs.push(...candidates.slice(0, target - adjs.length));
+  const remaining = Math.max(0, target - adjs.length);
+  adjs.push(...candidates.slice(0, remaining));
 
   // Dividends actually paid in cash during the year (affect SOCE only).
   const dividendsPaid = Math.random() > 0.4 ? rand(80, 250) : 0;
