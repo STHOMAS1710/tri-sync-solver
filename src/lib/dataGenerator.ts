@@ -276,18 +276,6 @@ function generateAdjustments(
   difficulty: Difficulty,
   meta: ReturnType<typeof buildTrialBalance>["meta"],
 ): { adjustments: Adjustment[]; dividendsPaid: number } {
-
-// -----------------------------------------------------------------------------
-// Step 2 — Generate balanced double-entry adjustments
-// -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
-// Step 2 — Generate balanced double-entry adjustments
-// -----------------------------------------------------------------------------
-function generateAdjustments(
-  difficulty: Difficulty,
-  meta: ReturnType<typeof buildTrialBalance>["meta"],
-): { adjustments: Adjustment[]; dividendsPaid: number } {
   const adjs: Adjustment[] = [];
 
   const target =
