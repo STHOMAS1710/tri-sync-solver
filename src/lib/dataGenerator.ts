@@ -136,7 +136,17 @@ function companyName(): string {
  */
 function buildTrialBalance(difficulty: Difficulty): {
   tb: TrialBalanceAccount[];
-  meta: { openingInventory: number; receivables: number; nca: { buildings: number; plant: number; vehicles: number } };
+  meta: {
+  openingInventory: number;
+  receivables: number;
+  nca: {
+    landAndBuildings: number;
+    buildingElement: number;
+    landElement: number;
+    plant: number;
+    vehicles: number;
+  };
+};
 } {
   const scale = difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3;
 
@@ -162,6 +172,8 @@ const debentureInterest =
 
   // --- SFP figures (opening balances) ---
   const buildingsCost = rand(3000, 6000) * scale;
+  const buildingElement = Math.round(buildingsCost * (0.45 + Math.random() * 0.2));
+  const landElement = buildingsCost - buildingElement;
   const plantCost = rand(2000, 4000) * scale;
   const vehiclesCost = rand(800, 1500) * scale;
   const accDepBuildings = Math.round(buildingsCost * (0.1 + Math.random() * 0.2));
@@ -241,14 +253,19 @@ const debentureInterest =
   const totalCr = tb.reduce((s, a) => s + a.credit, 0);
   if (totalDr !== totalCr) throw new Error(`TB unbalanced: ${totalDr} vs ${totalCr}`);
 
-  return {
-    tb,
-    meta: {
-      openingInventory,
-      receivables,
-      nca: { buildings: buildingsCost, plant: plantCost, vehicles: vehiclesCost },
+return {
+  tb,
+  meta: {
+    openingInventory,
+    receivables,
+    nca: {
+      landAndBuildings: buildingsCost,
+      buildingElement,
+      landElement,
+      plant: plantCost,
+      vehicles: vehiclesCost,
     },
-  };
+  },
 }
 
 // -----------------------------------------------------------------------------
@@ -284,13 +301,13 @@ function generateAdjustments(
   const plantDepRate = rand(8, 20);         // 8%–20%
   const vehiclesDepRate = rand(15, 30);     // 15%–30%
 
-  const depB = Math.round(meta.nca.buildings * (buildingsDepRate / 100));
+  const depB = Math.round(meta.nca.buildingElement * (buildingsDepRate / 100));
   const depP = Math.round(meta.nca.plant * (plantDepRate / 100));
   const depV = Math.round(meta.nca.vehicles * (vehiclesDepRate / 100));
 
   adjs.push(
   {
-    description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost.`,
+    description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost. The freehold land and buildings balance includes land of £${meta.nca.landElement}k and buildings of £${meta.nca.buildingElement}k. Land is not depreciated.`,
     type: "depreciation",
     entries: [{
       debitAccount: "Depreciation - Buildings",
