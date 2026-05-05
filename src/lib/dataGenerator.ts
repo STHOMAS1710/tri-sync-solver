@@ -145,6 +145,9 @@ function buildTrialBalance(difficulty: Difficulty): {
     landElement: number;
     plant: number;
     vehicles: number;
+    accDepBuildings: number;
+    accDepPlant: number;
+    accDepVehicles: number;
   };
 };
 } {
@@ -264,6 +267,9 @@ return {
       landElement,
       plant: plantCost,
       vehicles: vehiclesCost,
+      accDepBuildings,
+      accDepPlant,
+      accDepVehicles,
     },
   },
 };
@@ -298,17 +304,46 @@ function generateAdjustments(
 
   // Candidate adjustments — randomly select enough to hit the exact target
   // range for each difficulty level: Easy 3-4, Medium 5-6, Hard 6-7.
-  const buildingsDepRate = rand(1, 5);      // 1%–5%
-  const plantDepRate = rand(8, 20);         // 8%–20%
-  const vehiclesDepRate = rand(15, 30);     // 15%–30%
+const buildingsDepRate = rand(1, 5);      // 1%–5%
+const plantDepRate = rand(8, 20);         // 8%–20%
+const vehiclesDepRate = rand(15, 30);     // 15%–30%
 
-  const depB = Math.round(meta.nca.buildingElement * (buildingsDepRate / 100));
-  const depP = Math.round(meta.nca.plant * (plantDepRate / 100));
-  const depV = Math.round(meta.nca.vehicles * (vehiclesDepRate / 100));
+const buildingsDepMethod =
+  Math.random() > 0.5 ? "straight-line" : "reducing balance";
+
+const plantDepMethod =
+  Math.random() > 0.5 ? "straight-line" : "reducing balance";
+
+const vehiclesDepMethod =
+  Math.random() > 0.5 ? "straight-line" : "reducing balance";
+
+const depB =
+  buildingsDepMethod === "straight-line"
+    ? Math.round(meta.nca.buildingElement * (buildingsDepRate / 100))
+    : Math.round(
+        (meta.nca.buildingElement - meta.nca.accDepBuildings) *
+          (buildingsDepRate / 100)
+      );
+
+const depP =
+  plantDepMethod === "straight-line"
+    ? Math.round(meta.nca.plant * (plantDepRate / 100))
+    : Math.round(
+        (meta.nca.plant - meta.nca.accDepPlant) *
+          (plantDepRate / 100)
+      );
+
+const depV =
+  vehiclesDepMethod === "straight-line"
+    ? Math.round(meta.nca.vehicles * (vehiclesDepRate / 100))
+    : Math.round(
+        (meta.nca.vehicles - meta.nca.accDepVehicles) *
+          (vehiclesDepRate / 100)
+      );
 
   adjs.push(
   {
-    description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost. The freehold land and buildings balance includes land of £${meta.nca.landElement}k and buildings of £${meta.nca.buildingElement}k. Land is not depreciated.`,
+    description: `Depreciation: buildings ${buildingsDepRate}% ${buildingsDepMethod}. The buildings element is £${meta.nca.buildingElement}k. Land is not depreciated.`,
     type: "depreciation",
     entries: [{
       debitAccount: "Depreciation - Buildings",
@@ -318,7 +353,7 @@ function generateAdjustments(
     }],
   },
   {
-    description: `Depreciation: plant & machinery ${plantDepRate}% straight-line on cost.`,
+    description: `Depreciation: plant & machinery ${plantDepRate}% ${plantDepMethod}.`,
     type: "depreciation",
     entries: [{
       debitAccount: "Depreciation - Plant and machinery",
@@ -328,7 +363,7 @@ function generateAdjustments(
     }],
   },
   {
-    description: `Depreciation: motor vehicles ${vehiclesDepRate}% straight-line on cost.`,
+    description: `Depreciation: motor vehicles ${vehiclesDepRate}% ${vehiclesDepMethod}.`,
     type: "depreciation",
     entries: [{
       debitAccount: "Depreciation - Motor vehicles",
