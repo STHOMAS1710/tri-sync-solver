@@ -293,7 +293,7 @@ function generateAdjustments(
   const taxAccrual = rand(90, 260);
   const candidates: Adjustment[] = [
     {
-      description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost (£${depB}k).`,
+      description: `Depreciation: buildings ${buildingsDepRate}% straight-line on cost.`,
       type: "depreciation",
       entries: [{
         debitAccount: "Depreciation - Buildings", debitAmount: depB,
@@ -301,7 +301,7 @@ function generateAdjustments(
       }],
     },
     {
-      description: `Depreciation: plant & machinery ${plantDepRate}% straight-line on cost (£${depP}k).`,
+      description: `Depreciation: plant & machinery ${plantDepRate}% straight-line on cost.`,
       type: "depreciation",
       entries: [{
         debitAccount: "Depreciation - Plant and machinery", debitAmount: depP,
@@ -309,7 +309,7 @@ function generateAdjustments(
       }],
     },
     {
-      description: `Depreciation: motor vehicles ${vehiclesDepRate}% straight-line on cost (£${depV}k).`,
+      description: `Depreciation: motor vehicles ${vehiclesDepRate}% straight-line on cost.`,
       type: "depreciation",
       entries: [{
         debitAccount: "Depreciation - Motor vehicles", debitAmount: depV,
