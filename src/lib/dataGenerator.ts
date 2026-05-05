@@ -259,7 +259,6 @@ const debentureInterest =
       openingInventory,
       receivables,
       nca: {
-        landAndBuildings: buildingsCost,
         buildingElement,
         landElement,
         plant: plantCost,
