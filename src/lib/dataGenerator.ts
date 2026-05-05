@@ -259,7 +259,9 @@ return {
     openingInventory,
     receivables,
     nca: {
-      buildings: buildingsCost,
+      landAndBuildings: buildingsCost,
+      buildingElement,
+      landElement,
       plant: plantCost,
       vehicles: vehiclesCost,
     },
@@ -271,6 +273,13 @@ return {
 // Step 2 — Generate balanced double-entry adjustments
 // -----------------------------------------------------------------------------
 function generateAdjustments(
+  difficulty: Difficulty,
+  meta: ReturnType<typeof buildTrialBalance>["meta"],
+): { adjustments: Adjustment[]; dividendsPaid: number } {
+
+// -----------------------------------------------------------------------------
+// Step 2 — Generate balanced double-entry adjustments
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Step 2 — Generate balanced double-entry adjustments
