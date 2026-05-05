@@ -253,19 +253,18 @@ const debentureInterest =
   const totalCr = tb.reduce((s, a) => s + a.credit, 0);
   if (totalDr !== totalCr) throw new Error(`TB unbalanced: ${totalDr} vs ${totalCr}`);
 
-  return {
-    tb,
-    meta: {
-      openingInventory,
-      receivables,
-      nca: {
-        buildingElement,
-        landElement,
-        plant: plantCost,
-        vehicles: vehiclesCost,
-      },
+return {
+  tb,
+  meta: {
+    openingInventory,
+    receivables,
+    nca: {
+      buildings: buildingsCost,
+      plant: plantCost,
+      vehicles: vehiclesCost,
     },
-  };
+  },
+};
 }
 
 // -----------------------------------------------------------------------------
