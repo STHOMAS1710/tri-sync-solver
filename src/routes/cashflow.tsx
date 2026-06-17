@@ -31,11 +31,15 @@ function CashFlowPage() {
   const cell = (n: number) => <td className="ledger-figure">{n.toLocaleString()}</td>;
   const neg = (n: number) => <td className="ledger-figure">({n.toLocaleString()})</td>;
 
-  // ===== Worked Cash Flow Statement (Indirect Method) =====
-  const depreciation = info.depreciation?.amount ?? 0;
+// ===== Worked Cash Flow Statement (Indirect Method) =====
   const disposalCost = info.assetDisposal?.cost ?? 0;
   const disposalAccDepn = info.assetDisposal?.accumulatedDepreciation ?? 0;
   const disposalProceeds = info.assetDisposal?.saleProceeds ?? 0;
+  
+  // THE FIX: If the note is missing (Medium/Hard), the answer key derives it mathematically!
+  const depreciation = info.depreciation?.amount ?? 
+    (cy.nonCurrentAssets.accumulatedDepreciation - py.nonCurrentAssets.accumulatedDepreciation + disposalAccDepn);
+
   const disposalNBV = disposalCost - disposalAccDepn;
   const gainOnDisposal = disposalProceeds - disposalNBV; // +gain / -loss
   const debenturesIssued = info.debentures?.amount ?? 0;
