@@ -226,41 +226,88 @@ function generateProfitLossStatement(difficulty: Difficulty): ProfitLossStatemen
 }
 
 // ============ GENERATE ADDITIONAL INFORMATION ============
-function generateAdditionalInformation(difficulty: Difficulty): AdditionalInformation {
+function generateAdditionalInformation(
+  difficulty: Difficulty,
+  current: StatementOfFinancialPositionData,
+  prior: StatementOfFinancialPositionData
+): AdditionalInformation {
   const info: AdditionalInformation = {};
+  
+  // 1. Randomly decide which adjustments to include (ensure at least 2)
+  const possibleAdjustments = ['disposal', 'debenture', 'dividend'];
+  // Shuffle array and pick between 2 and 3 items
+  const shuffled = possibleAdjustments.sort(() => 0.5 - Math.random());
+  const numAdjustments = Math.floor(Math.random() * 2) + 2; // Returns 2 or 3
+  const selectedAdjustments = shuffled.slice(0, numAdjustments);
 
-  // Asset disposal (for medium/hard)
-  if (difficulty !== 'easy' && Math.random() > 0.5) {
-    const cost = randomRange(100, 400);
-    const accDepn = randomRange(20, 100);
+  // 2. Process Asset Disposals
+  let accDepnDisposed = 0;
+  if (selectedAdjustments.includes('disposal')) {
+    const cost = Math.floor(Math.random() * (100 - 20 + 1)) + 20;
+    const accDep = Math.floor(Math.random() * (cost - 5 - 5 + 1)) + 5;
+    const nbv = cost - accDep;
+    const proceeds = Math.floor(Math.random() * (nbv + 20 - 5 + 1)) + 5;
+    const profitLoss = proceeds - nbv;
+    accDepnDisposed = accDep;
+
+    // Randomize the exam phrasing based on the past papers
+    const phrasingType = Math.random() > 0.5 ? 'A' : 'B';
+    let description = '';
+
+    if (phrasingType === 'A') {
+      description = `During the year, non-current assets were disposed of for proceeds of £${proceeds}k. These had cost the company £${cost}k, and at the date of sale had a net book value of £${nbv}k.`;
+    } else {
+      const lossOrProfit = profitLoss < 0 ? `loss of £${Math.abs(profitLoss)}k` : `profit of £${profitLoss}k`;
+      description = `During the year plant and equipment, which had originally cost £${cost}k and at the date of sale had accumulated depreciation of £${accDep}k, was sold for a ${lossOrProfit}.`;
+    }
+
     info.assetDisposal = {
-      description: `Plant and equipment which originally cost £${cost}k and had accumulated depreciation of £${accDepn}k was sold for £${cost - accDepn + randomRange(-50, 50)}k.`,
+      description,
       cost,
-      accumulatedDepreciation: accDepn,
-      saleProceeds: cost - accDepn + randomRange(-50, 50),
+      accumulatedDepreciation: accDep,
+      proceeds,
+      profitLoss
     };
   }
 
-  // Debentures (for hard)
-  if (difficulty === 'hard' && Math.random() > 0.5) {
-    info.debentures = {
-      description: `New debentures of £${randomRange(200, 500)}k were issued during the year.`,
-      amount: randomRange(200, 500),
-    };
+  // 3. Process Debentures
+  if (selectedAdjustments.includes('debenture')) {
+    const debentureChange = current.nonCurrentLiabilities.debentures - prior.nonCurrentLiabilities.debentures;
+    
+    if (debentureChange > 0) {
+      info.debentures = {
+        description: `The issue of further debentures of £${debentureChange}k was made on 1 January 20X7. All interest has been paid up to date.`,
+        amount: debentureChange
+      };
+    } else if (debentureChange < 0) {
+      info.debentures = {
+        description: `The debentures of £${Math.abs(debentureChange)}k were repaid on 30 September 20X3. All interest due has been paid.`,
+        amount: debentureChange
+      };
+    }
+  } else {
+    // If not selected, force the balance sheet debentures to remain the same so it balances
+    current.nonCurrentLiabilities.debentures = prior.nonCurrentLiabilities.debentures;
   }
 
-  // Dividends
-  if (Math.random() > 0.4) {
+  // 4. Process Dividends
+  if (selectedAdjustments.includes('dividend')) {
+    const dividendAmount = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
     info.dividends = {
-      description: `Dividends of £${randomRange(50, 200)}k were paid during the year.`,
-      amount: randomRange(50, 200),
+      description: `Dividends of £${dividendAmount}k were paid during the year.`,
+      amount: dividendAmount
     };
   }
 
-  // Depreciation
+  // 5. Depreciation (Mandatory for the balance sheet to work, as we discussed!)
+  const calculatedDepreciation = 
+    current.nonCurrentAssets.accumulatedDepreciation - 
+    prior.nonCurrentAssets.accumulatedDepreciation + 
+    accDepnDisposed;
+
   info.depreciation = {
-    description: `Depreciation for the year was £${randomRange(100, 300)}k.`,
-    amount: randomRange(100, 300),
+    description: `Depreciation for the year was £${calculatedDepreciation}k.`,
+    amount: calculatedDepreciation,
   };
 
   return info;
