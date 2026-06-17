@@ -262,27 +262,24 @@ function generateAdditionalInformation(
       description = `During the year plant and equipment, which had originally cost £${cost}k and at the date of sale had accumulated depreciation of £${accDep}k, was sold for a ${lossOrProfit}.`;
     }
 
+    // TS FIX APPLIED HERE: Properly mapped to saleProceeds
     info.assetDisposal = {
       description,
       cost,
       accumulatedDepreciation: accDep,
-      proceeds,
-      profitLoss
+      saleProceeds: proceeds
     };
   }
 
   // 4. Process Debentures
   if (selectedAdjustments.includes('debenture')) {
-    // CRITICAL FIX: We must force a difference here, and balance the Cash account so the SFP doesn't break!
     const changeAmount = Math.floor(Math.random() * (400 - 100 + 1)) + 100;
     const isIssue = Math.random() > 0.5;
 
     if (isIssue) {
-      // Issue: Increases Debentures (Liability) and Cash (Asset)
+      // Issue: Safely inflate the current year's assets and liabilities
       current.nonCurrentLiabilities.debentures += changeAmount;
       current.currentAssets.cashAtBank += changeAmount;
-      
-      // Keep Totals Balanced
       current.currentAssets.total += changeAmount;
       current.totalAssets += changeAmount;
       current.totalLiabilitiesAndEquity += changeAmount;
@@ -292,24 +289,12 @@ function generateAdditionalInformation(
         amount: changeAmount
       };
     } else {
-      // Repayment: Decreases Debentures (Liability) and Cash (Asset)
-      // First, ensure prior year actually has enough debentures to repay!
-      if (prior.nonCurrentLiabilities.debentures < changeAmount) {
-        const deficit = changeAmount - prior.nonCurrentLiabilities.debentures + 100;
-        prior.nonCurrentLiabilities.debentures += deficit;
-        prior.currentAssets.cashAtBank += deficit;
-        prior.currentAssets.total += deficit;
-        prior.totalAssets += deficit;
-        prior.totalLiabilitiesAndEquity += deficit;
-      }
-
-      current.nonCurrentLiabilities.debentures = prior.nonCurrentLiabilities.debentures - changeAmount;
-      current.currentAssets.cashAtBank -= changeAmount;
-      
-      // Keep Totals Balanced
-      current.currentAssets.total -= changeAmount;
-      current.totalAssets -= changeAmount;
-      current.totalLiabilitiesAndEquity -= changeAmount;
+      // Repayment: Safely inflate the PRIOR year's assets and liabilities (MATH FIX APPLIED HERE)
+      prior.nonCurrentLiabilities.debentures += changeAmount;
+      prior.currentAssets.cashAtBank += changeAmount;
+      prior.currentAssets.total += changeAmount;
+      prior.totalAssets += changeAmount;
+      prior.totalLiabilitiesAndEquity += changeAmount;
 
       info.debentures = {
         description: `The debentures of £${changeAmount}k were repaid on 30 September 20X3. All interest due has been paid.`,
