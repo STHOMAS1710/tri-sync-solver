@@ -310,16 +310,19 @@ function generateAdditionalInformation(
     };
   }
 
-  // 6. Mandatory Depreciation Calculation
+// 6. Mandatory Depreciation Calculation
   const calculatedDepreciation = 
     current.nonCurrentAssets.accumulatedDepreciation - 
     prior.nonCurrentAssets.accumulatedDepreciation + 
     accDepnDisposed;
 
-  info.depreciation = {
-    description: `Depreciation for the year was £${calculatedDepreciation}k.`,
-    amount: calculatedDepreciation,
-  };
+  // THE FIX: Only attach the explicit depreciation note if the difficulty is easy!
+  if (diffString === 'easy') {
+    info.depreciation = {
+      description: `Depreciation for the year was £${calculatedDepreciation}k.`,
+      amount: calculatedDepreciation,
+    };
+  }
 
   return info;
 }
