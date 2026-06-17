@@ -343,15 +343,43 @@ export function generateCashFlowScenario(companyName: string, difficulty: Diffic
   // 1. Generate the independent balance sheets
   const { current, prior } = generateFinancialPositions(difficulty);
   
-  // 2. Generate the notes/adjustments (This modifies debentures and keeps the SFP balanced)
+  // 2. Generate the notes/adjustments
   const additionalInfo = generateAdditionalInformation(difficulty, current, prior);
 
-  // 3. THE MAGIC FIX: Calculate the exact profit needed to link Retained Earnings and Dividends!
+  // 3. Calculate the exact profit needed to link Retained Earnings
   const dividends = additionalInfo.dividends?.amount ?? 0;
   const requiredProfit = (current.equity.retainedEarnings - prior.equity.retainedEarnings) + dividends;
 
   // 4. Generate the P&L using that exact required profit
   const profitLoss = generateProfitLossStatement(difficulty, requiredProfit);
+
+  // 5. THE ULTIMATE TAX FIX: Logically link Tax Payable to the generated Tax Expense
+  // Assume the company pays off all of last year's tax, plus maybe a fraction of this year's
+  const taxPaid = prior.currentLiabilities.taxPayable + Math.floor(profitLoss.taxation * 0.5);
+  
+  // Calculate what the closing tax payable SHOULD logically be
+  const idealCurrentTaxPayable = Math.max(0, prior.currentLiabilities.taxPayable + profitLoss.taxation - taxPaid);
+  
+  // Find the difference from whatever random number the balance sheet initially guessed
+  const difference = idealCurrentTaxPayable - current.currentLiabilities.taxPayable;
+  
+  // Update the Tax Payable to the perfect logical figure
+  current.currentLiabilities.taxPayable = idealCurrentTaxPayable;
+  
+  // Hide the difference in Trade Payables so Total Liabilities (and the Balance Sheet) stays perfectly balanced!
+  current.currentLiabilities.tradePayables -= difference;
+
+  // Safeguard: If Trade Payables drops too low due to the math, balance the rest with Cash
+  if (current.currentLiabilities.tradePayables < 20) {
+    const deficit = 20 - current.currentLiabilities.tradePayables;
+    current.currentLiabilities.tradePayables = 20; // Floor it at £20k
+    
+    // Maintain perfect balance across the SFP
+    current.currentAssets.cashAtBank += deficit;
+    current.currentAssets.total += deficit;
+    current.totalAssets += deficit;
+    current.totalLiabilitiesAndEquity += deficit;
+  }
 
   return {
     companyName,
