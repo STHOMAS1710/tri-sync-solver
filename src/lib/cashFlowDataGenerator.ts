@@ -1,7 +1,6 @@
 /**
  * LedgerLab Cash Flow & Ratio Data Generator
  * Generates separate financial statements for Part 2 (Cash Flow) and Part 3 (Ratios)
- * These are independent from Part 1 questions, only linked by company name
  */
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
@@ -262,7 +261,6 @@ function generateAdditionalInformation(
       description = `During the year plant and equipment, which had originally cost £${cost}k and at the date of sale had accumulated depreciation of £${accDep}k, was sold for a ${lossOrProfit}.`;
     }
 
-    // TS FIX APPLIED HERE: Properly mapped to saleProceeds
     info.assetDisposal = {
       description,
       cost,
@@ -289,7 +287,7 @@ function generateAdditionalInformation(
         amount: changeAmount
       };
     } else {
-      // Repayment: Safely inflate the PRIOR year's assets and liabilities (MATH FIX APPLIED HERE)
+      // Repayment: Safely inflate the PRIOR year's assets and liabilities
       prior.nonCurrentLiabilities.debentures += changeAmount;
       prior.currentAssets.cashAtBank += changeAmount;
       prior.currentAssets.total += changeAmount;
@@ -330,7 +328,9 @@ function generateAdditionalInformation(
 export function generateCashFlowScenario(companyName: string, difficulty: Difficulty): CashFlowScenario {
   const { current, prior } = generateFinancialPositions(difficulty);
   const profitLoss = generateProfitLossStatement(difficulty);
-  const additionalInfo = generateAdditionalInformation(difficulty);
+  
+  // THE FIX: We are safely passing the fully generated current and prior year data into the notes generator!
+  const additionalInfo = generateAdditionalInformation(difficulty, current, prior);
 
   return {
     companyName,
