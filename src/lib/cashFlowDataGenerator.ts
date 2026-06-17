@@ -233,14 +233,16 @@ function generateAdditionalInformation(
 ): AdditionalInformation {
   const info: AdditionalInformation = {};
   
-  // 1. Randomly decide which adjustments to include (ensure at least 2)
+  // 1. Dynamically set the number of adjustments
+  const diffString = String(difficulty).toLowerCase();
+  const numAdjustments = diffString === 'easy' ? 1 : 2;
+
+  // 2. Randomly select which adjustments to include
   const possibleAdjustments = ['disposal', 'debenture', 'dividend'];
-  // Shuffle array and pick between 2 and 3 items
   const shuffled = possibleAdjustments.sort(() => 0.5 - Math.random());
-  const numAdjustments = Math.floor(Math.random() * 2) + 2; // Returns 2 or 3
   const selectedAdjustments = shuffled.slice(0, numAdjustments);
 
-  // 2. Process Asset Disposals
+  // 3. Process Asset Disposals
   let accDepnDisposed = 0;
   if (selectedAdjustments.includes('disposal')) {
     const cost = Math.floor(Math.random() * (100 - 20 + 1)) + 20;
@@ -250,12 +252,11 @@ function generateAdditionalInformation(
     const profitLoss = proceeds - nbv;
     accDepnDisposed = accDep;
 
-    // Randomize the exam phrasing based on the past papers
     const phrasingType = Math.random() > 0.5 ? 'A' : 'B';
     let description = '';
 
     if (phrasingType === 'A') {
-      description = `During the year, non-current assets were disposed of for proceeds of £${proceeds}k. These had cost the company £${cost}k, and at the date of sale had a net book value of £${nbv}k.`;
+      description = `During the year, certain items of machinery were disposed of for proceeds of £${proceeds}k. The machines had originally cost £${cost}k and had a net book value at disposal of £${nbv}k.`;
     } else {
       const lossOrProfit = profitLoss < 0 ? `loss of £${Math.abs(profitLoss)}k` : `profit of £${profitLoss}k`;
       description = `During the year plant and equipment, which had originally cost £${cost}k and at the date of sale had accumulated depreciation of £${accDep}k, was sold for a ${lossOrProfit}.`;
@@ -270,27 +271,54 @@ function generateAdditionalInformation(
     };
   }
 
-  // 3. Process Debentures
+  // 4. Process Debentures
   if (selectedAdjustments.includes('debenture')) {
-    const debentureChange = current.nonCurrentLiabilities.debentures - prior.nonCurrentLiabilities.debentures;
-    
-    if (debentureChange > 0) {
+    // CRITICAL FIX: We must force a difference here, and balance the Cash account so the SFP doesn't break!
+    const changeAmount = Math.floor(Math.random() * (400 - 100 + 1)) + 100;
+    const isIssue = Math.random() > 0.5;
+
+    if (isIssue) {
+      // Issue: Increases Debentures (Liability) and Cash (Asset)
+      current.nonCurrentLiabilities.debentures += changeAmount;
+      current.currentAssets.cashAtBank += changeAmount;
+      
+      // Keep Totals Balanced
+      current.currentAssets.total += changeAmount;
+      current.totalAssets += changeAmount;
+      current.totalLiabilitiesAndEquity += changeAmount;
+
       info.debentures = {
-        description: `The issue of further debentures of £${debentureChange}k was made on 1 January 20X7. All interest has been paid up to date.`,
-        amount: debentureChange
+        description: `The issue of further debentures of £${changeAmount}k was made on 1 January 20X7. All interest has been paid up to date.`,
+        amount: changeAmount
       };
-    } else if (debentureChange < 0) {
+    } else {
+      // Repayment: Decreases Debentures (Liability) and Cash (Asset)
+      // First, ensure prior year actually has enough debentures to repay!
+      if (prior.nonCurrentLiabilities.debentures < changeAmount) {
+        const deficit = changeAmount - prior.nonCurrentLiabilities.debentures + 100;
+        prior.nonCurrentLiabilities.debentures += deficit;
+        prior.currentAssets.cashAtBank += deficit;
+        prior.currentAssets.total += deficit;
+        prior.totalAssets += deficit;
+        prior.totalLiabilitiesAndEquity += deficit;
+      }
+
+      current.nonCurrentLiabilities.debentures = prior.nonCurrentLiabilities.debentures - changeAmount;
+      current.currentAssets.cashAtBank -= changeAmount;
+      
+      // Keep Totals Balanced
+      current.currentAssets.total -= changeAmount;
+      current.totalAssets -= changeAmount;
+      current.totalLiabilitiesAndEquity -= changeAmount;
+
       info.debentures = {
-        description: `The debentures of £${Math.abs(debentureChange)}k were repaid on 30 September 20X3. All interest due has been paid.`,
-        amount: debentureChange
+        description: `The debentures of £${changeAmount}k were repaid on 30 September 20X3. All interest due has been paid.`,
+        amount: -changeAmount
       };
     }
-  } else {
-    // If not selected, force the balance sheet debentures to remain the same so it balances
-    current.nonCurrentLiabilities.debentures = prior.nonCurrentLiabilities.debentures;
   }
 
-  // 4. Process Dividends
+  // 5. Process Dividends
   if (selectedAdjustments.includes('dividend')) {
     const dividendAmount = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
     info.dividends = {
@@ -299,7 +327,7 @@ function generateAdditionalInformation(
     };
   }
 
-  // 5. Depreciation (Mandatory for the balance sheet to work, as we discussed!)
+  // 6. Mandatory Depreciation Calculation
   const calculatedDepreciation = 
     current.nonCurrentAssets.accumulatedDepreciation - 
     prior.nonCurrentAssets.accumulatedDepreciation + 
