@@ -199,26 +199,27 @@ function generateFinancialPositions(difficulty: Difficulty): {
 }
 
 // ============ GENERATE PROFIT & LOSS STATEMENT ============
-function generateProfitLossStatement(difficulty: Difficulty): ProfitLossStatement {
-  const revenue = randomRange(5000, 15000);
+// THE FIX: The P&L now takes a requiredProfit parameter so it integrates perfectly with the Balance Sheet!
+function generateProfitLossStatement(difficulty: Difficulty, requiredProfitForYear: number): ProfitLossStatement {
+  const profitForYear = requiredProfitForYear;
+  
+  // Reverse-engineer the PBT based on the 19% tax rate (or 0% if it's a loss)
+  const profitBeforeTax = profitForYear > 0 ? Math.round(profitForYear / 0.81) : profitForYear;
+  const taxation = profitBeforeTax - profitForYear;
+  
+  const financeExpenses = difficulty === 'easy' ? 0 : randomRange(50, 200);
+  const operatingProfit = profitBeforeTax + financeExpenses;
+  
+  // Generate a realistic revenue based on the operating profit so expenses don't become negative
+  const minRevenue = Math.max(5000, Math.abs(operatingProfit) * 5);
+  const revenue = Math.round(randomRange(minRevenue, minRevenue + 5000) / 10) * 10;
   
   const costOfSalesPercent = randomRange(30, 70) / 100;
   const costOfSales = Math.round((revenue * costOfSalesPercent) / 10) * 10;
   const grossProfit = revenue - costOfSales;
   
-  const operatingExpensesPercent = randomRange(20, 60) / 100;
-  const operatingExpenses = Math.round((grossProfit * operatingExpensesPercent) / 10) * 10;
-  const operatingProfit = grossProfit - operatingExpenses;
-  
-  const financeExpenses = difficulty === 'easy' ? 0 : randomRange(50, 200);
-  
-  // THE FIX: The Math.max floor is removed so the company can legitimately make a loss!
-  const profitBeforeTax = operatingProfit - financeExpenses;
-  
-  // THE SAFEGUARD: If profit is greater than 0, calculate 19% tax. If it is a loss, tax is strictly 0.
-  const taxation = profitBeforeTax > 0 ? Math.round(profitBeforeTax * 0.19) : 0;
-  
-  const profitForYear = profitBeforeTax - taxation;
+  // Operating expenses becomes the "plug" figure to hit the required operating profit exactly
+  const operatingExpenses = grossProfit - operatingProfit;
 
   return {
     year: 2026,
@@ -339,11 +340,18 @@ function generateAdditionalInformation(
 
 // ============ MAIN GENERATOR ============
 export function generateCashFlowScenario(companyName: string, difficulty: Difficulty): CashFlowScenario {
+  // 1. Generate the independent balance sheets
   const { current, prior } = generateFinancialPositions(difficulty);
-  const profitLoss = generateProfitLossStatement(difficulty);
   
-  // THE FIX: We are safely passing the fully generated current and prior year data into the notes generator!
+  // 2. Generate the notes/adjustments (This modifies debentures and keeps the SFP balanced)
   const additionalInfo = generateAdditionalInformation(difficulty, current, prior);
+
+  // 3. THE MAGIC FIX: Calculate the exact profit needed to link Retained Earnings and Dividends!
+  const dividends = additionalInfo.dividends?.amount ?? 0;
+  const requiredProfit = (current.equity.retainedEarnings - prior.equity.retainedEarnings) + dividends;
+
+  // 4. Generate the P&L using that exact required profit
+  const profitLoss = generateProfitLossStatement(difficulty, requiredProfit);
 
   return {
     companyName,
