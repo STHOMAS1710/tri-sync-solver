@@ -201,12 +201,21 @@ function generateFinancialPositions(difficulty: Difficulty): {
 // ============ GENERATE PROFIT & LOSS STATEMENT ============
 function generateProfitLossStatement(difficulty: Difficulty): ProfitLossStatement {
   const revenue = randomRange(5000, 15000);
-  const costOfSales = Math.round(revenue * randomRange(0.4, 0.6) / 10) * 10;
+  
+  // THE FIX: Cost of Sales leniency expanded by 10% on both sides (30% to 70%)
+  const costOfSalesPercent = randomRange(30, 70) / 100;
+  const costOfSales = Math.round((revenue * costOfSalesPercent) / 10) * 10;
   const grossProfit = revenue - costOfSales;
-  const operatingExpenses = Math.round(grossProfit * randomRange(0.3, 0.5) / 10) * 10;
+  
+  // THE FIX: Operating Expenses leniency expanded by 10% on both sides (20% to 60%)
+  const operatingExpensesPercent = randomRange(20, 60) / 100;
+  const operatingExpenses = Math.round((grossProfit * operatingExpensesPercent) / 10) * 10;
   const operatingProfit = grossProfit - operatingExpenses;
+  
   const financeExpenses = difficulty === 'easy' ? 0 : randomRange(50, 200);
-  const profitBeforeTax = operatingProfit - financeExpenses;
+  
+  // The safeguard is still here protecting against negative profits!
+  const profitBeforeTax = Math.max(0, operatingProfit - financeExpenses);
   const taxation = Math.round(profitBeforeTax * 0.19);
   const profitForYear = profitBeforeTax - taxation;
 
