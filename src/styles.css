@@ -573,3 +573,17 @@ th {
   display: block;
   border: 1px solid rgba(139, 92, 246, 0.35);
 }
+
+/* --- Green Answer Cards --- */
+.answer-card {
+  /* Emerald green border instead of purple */
+  border-color: rgba(16, 185, 129, 0.45) !important; 
+  /* Green glowing shadow */
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.08) !important;
+}
+
+/* Optional: Make the tables inside the answer card feel slightly green-tinted to match */
+.answer-card .bg-secondary\/50,
+.answer-card .bg-secondary\/40 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
