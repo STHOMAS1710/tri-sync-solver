@@ -166,7 +166,7 @@ function CashFlowPage() {
         </div>
 
         {showAnswer && (
-          <div className="ledger-card">
+          <div className="ledger-card answer-card">
             <h3 className="text-xl font-bold mb-4">
               Answer — Cash Flow Statement (Indirect Method)
             </h3>
