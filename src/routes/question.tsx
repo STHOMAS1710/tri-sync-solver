@@ -220,7 +220,7 @@ function AnswersPanel({ computed, dividendsPaid, yearEnd }: { computed: Computed
   return (
     <div className="space-y-6">
       {/* P&L */}
-      <div className="ledger-card">
+      <div className="ledger-card answer-card">
         <h2 className="text-xl font-bold mb-4">Answer · Statement of Profit or Loss for the year ended {yearEnd}</h2>
         <table className="w-full text-sm">
           <thead><tr className="text-muted-foreground"><th className="text-left">£000</th><th className="text-right"></th></tr></thead>
@@ -242,7 +242,7 @@ function AnswersPanel({ computed, dividendsPaid, yearEnd }: { computed: Computed
       </div>
 
       {/* SOCE */}
-      <div className="ledger-card">
+      <div className="ledger-card answer-card">
         <h2 className="text-xl font-bold mb-4">Answer · Statement of Changes in Equity</h2>
         <table className="w-full text-sm">
           <thead>
@@ -285,7 +285,7 @@ function AnswersPanel({ computed, dividendsPaid, yearEnd }: { computed: Computed
       </div>
 
       {/* SFP */}
-      <div className="ledger-card">
+      <div className="ledger-card answer-card">
         <h2 className="text-xl font-bold mb-4">Answer · Statement of Financial Position as at {yearEnd}</h2>
         <table className="w-full text-sm">
           <tbody>
