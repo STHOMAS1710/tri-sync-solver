@@ -141,16 +141,20 @@ select,
 textarea {
   background: #09090f;
   color: #ffffff;
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  /* Changed from purple to a nice emerald green */
+  border: 1px solid rgba(16, 185, 129, 0.4); 
   border-radius: 8px;
   padding: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Utility fallback */
-.text-muted,
-.text-gray,
-.muted {
-  color: #a1a1aa;
+/* Add a nice green glow when the student clicks to type their answer */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #10b981; /* Solid green border */
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); /* Soft green outer glow */
 }
 
 /* --- Polish fixes --- */
