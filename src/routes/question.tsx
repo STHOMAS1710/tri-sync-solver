@@ -102,7 +102,7 @@ function QuestionPage() {
               {showAnswer ? "Hide" : "Show"} Answers
             </button>
           </div>
-          <div className="flex items-center gap-2">
+<div className="flex items-center gap-2">
             {([["trialBalance", "Trial Balance"], ["adjustments", "Adjustments"]] as const).map(([id, label]) => (
               <button
                 key={id}
@@ -115,6 +115,15 @@ function QuestionPage() {
               </button>
             ))}
           </div>
+
+          {/* --- Part 1 Instructions --- */}
+          <div className="flex items-start gap-3 mt-6 p-4 rounded-lg bg-secondary/30 border border-border">
+            <HelpCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+            <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+              Using the trial balance given and accounting for the adjustments, produce 3 statements: PNL, changes in equity & financial position.
+            </p>
+          </div>
+
         </div>
       </div>
 
