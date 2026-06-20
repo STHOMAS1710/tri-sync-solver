@@ -139,13 +139,24 @@ a:hover {
 input,
 select,
 textarea {
-  background: #09090f;
-  color: #ffffff;
-  /* Changed from purple to a nice emerald green */
-  border: 1px solid rgba(16, 185, 129, 0.4); 
-  border-radius: 8px;
-  padding: 0.75rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #09090f !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(16, 185, 129, 0.4) !important; 
+  border-radius: 8px !important;
+  padding: 0.75rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Add a nice green glow when clicked, overriding Tailwind's focus rings */
+input:focus,
+input:focus-visible,
+select:focus,
+select:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  outline: none !important;
+  border-color: #10b981 !important; 
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
 }
 
 /* Add a nice green glow when the student clicks to type their answer */
