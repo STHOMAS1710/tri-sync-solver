@@ -1,3 +1,6 @@
+import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react"; 
+// (Your existing icons might be different, just make sure HelpCircle is in there!)
+
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Eye, Lightbulb } from "lucide-react";
