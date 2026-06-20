@@ -107,7 +107,7 @@ function RatiosPage() {
         </div>
 
         {showAnswer && (
-          <div className="ledger-card">
+          <div className="ledger-card answer-card">
             <h3 className="text-xl font-bold mb-6">Answer</h3>
             <div className="space-y-4">
               {cats.map((c, i) => (
