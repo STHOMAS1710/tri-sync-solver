@@ -70,17 +70,19 @@ function fmt(n: number): string {
 
 function RatiosPage() {
   const navigate = useNavigate();
-  const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
+const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
   const [ratioData, setRatioData] = useState<ReturnType<typeof generateRatioData> | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("statements");
+  const [hintsEnabled, setHintsEnabled] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("currentScenario");
+    const storedHints = sessionStorage.getItem("hintsEnabled");
     if (stored) {
       setScenario(JSON.parse(stored));
-      // Generate standalone numbers just for this page
       setRatioData(generateRatioData());
+      if (storedHints) setHintsEnabled(JSON.parse(storedHints));
     } else {
       navigate({ to: "/setup" });
     }
@@ -146,7 +148,7 @@ function RatiosPage() {
             >
               Financial Statements
             </button>
-            {difficulty === "easy" && (
+                    {hintsEnabled && (
               <button
                 onClick={() => setActiveTab("formulas")}
                 className={`px-4 py-2 rounded-lg transition-colors ${
@@ -169,7 +171,7 @@ function RatiosPage() {
       </div>
 
       <div className="container py-8 space-y-6">
-        {activeTab === "formulas" && difficulty === "easy" && (
+        {activeTab === "formulas" && hintsEnabled && (
           <div className="ledger-card">
             <h2 className="text-xl font-bold mb-4">Formula Cheat Sheet</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
