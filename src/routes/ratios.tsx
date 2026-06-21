@@ -1,3 +1,5 @@
+import { ChevronLeft, Eye, HelpCircle } from "lucide-react";
+
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { ChevronLeft, Eye, RotateCcw } from "lucide-react";
@@ -78,7 +80,13 @@ function RatiosPage() {
       <div className="container py-8 max-w-5xl mx-auto space-y-8">
         <div className="ledger-card">
           <h2 className="text-2xl font-bold mb-4">Part 3: Ratio Analysis</h2>
-          <p className="text-muted-foreground">Using the financial statements from Parts 1 and 2, calculate the following ratios.</p>
+{/* --- Part 3 Instructions --- */}
+        <div className="flex items-start gap-3 mt-2 mb-6 p-4 rounded-lg bg-secondary/30 border border-border">
+          <HelpCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+            Using the financial statements provided, calculate the following financial ratios for the year. Round your answers to two decimal places where necessary.
+          </p>
+        </div>
         </div>
 
         {cats.map((c, i) => (
