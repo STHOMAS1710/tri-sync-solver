@@ -148,7 +148,7 @@ const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
             >
               Financial Statements
             </button>
-                    {hintsEnabled && (
+            {hintsEnabled && (
               <button
                 onClick={() => setActiveTab("formulas")}
                 className={`px-4 py-2 rounded-lg transition-colors ${
