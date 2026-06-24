@@ -1,8 +1,12 @@
+import { useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, Eye, HelpCircle, RefreshCw } from "lucide-react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { ChevronLeft, Eye, HelpCircle } from "lucide-react";
 import type { GeneratedScenario } from "@/lib/dataGenerator";
+
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+// (Keep your other imports like React and lucide-react here)
 
 export const Route = createFileRoute("/ratios")({
   head: () => ({
@@ -15,6 +19,20 @@ export const Route = createFileRoute("/ratios")({
 });
 
 type Tab = "statements" | "formulas";
+
+// This is your main page component
+function RatiosPage() {
+  // Initialize navigate right at the very top
+  const navigate = useNavigate();
+
+  // ... your existing useState hooks and logic go here ...
+
+  return (
+    <div>
+      {/* Your UI code goes here */}
+    </div>
+  );
+}
 
 // --- Standalone Ratio Data Generator ---
 function generateRatioData() {
