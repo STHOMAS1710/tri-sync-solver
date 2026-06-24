@@ -1,12 +1,7 @@
-import { useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Eye, HelpCircle, RefreshCw } from "lucide-react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { ChevronLeft, Eye, HelpCircle } from "lucide-react";
 import type { GeneratedScenario } from "@/lib/dataGenerator";
-
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-// (Keep your other imports like React and lucide-react here)
 
 export const Route = createFileRoute("/ratios")({
   head: () => ({
@@ -19,20 +14,6 @@ export const Route = createFileRoute("/ratios")({
 });
 
 type Tab = "statements" | "formulas";
-
-// This is your main page component
-function RatiosPage() {
-  // Initialize navigate right at the very top
-  const navigate = useNavigate();
-
-  // ... your existing useState hooks and logic go here ...
-
-  return (
-    <div>
-      {/* Your UI code goes here */}
-    </div>
-  );
-}
 
 // --- Standalone Ratio Data Generator ---
 function generateRatioData() {
@@ -148,31 +129,22 @@ function RatiosPage() {
               <p className="text-sm text-muted-foreground">Year ended {yearEnd}</p>
             </div>
             
-{/* Action Buttons & Scroll Prompt */}
+            {/* Answer Button & Scroll Prompt */}
             <div className="flex flex-col items-end gap-2">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => navigate({ to: "/setup" })}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm font-medium"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  New Question
-                </button>
-                <button
-                  onClick={() => setShowAnswer((s) => !s)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary transition-colors font-medium"
-                >
-                  <Eye className="w-4 h-4" />
-                  {showAnswer ? "Hide" : "Show"} Answers
-                </button>
-              </div>
-              
+              <button
+                onClick={() => setShowAnswer((s) => !s)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary transition-colors"
+              >
+                <Eye className="w-4 h-4" />
+                {showAnswer ? "Hide" : "Show"} Answers
+              </button>
               {showAnswer && (
                 <div className="px-2 py-1 text-[11px] font-medium bg-secondary/40 border border-border/50 rounded-md text-muted-foreground whitespace-nowrap">
                   ↓ Scroll down for answers
                 </div>
               )}
             </div>
+          </div>
 
           <div className="flex items-center gap-2">
             <button
