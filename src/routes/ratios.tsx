@@ -29,10 +29,15 @@ function generateRatioData() {
   // SFP Generation
   const nca = Math.round(revenue * (randomRange(80, 120) / 100));
   const loan = Math.round(nca * (randomRange(20, 40) / 100));
+  
   const financeCosts = Math.round(loan * 0.08); // 8% interest
   const profitBeforeTax = operatingProfit - financeCosts;
   const tax = Math.round(profitBeforeTax * 0.20);
   const profitForYear = profitBeforeTax - tax;
+
+  // HARD MODE: Generate a dividend capped at max 85% of Profit After Tax
+  const maxDividend = Math.floor(profitForYear * 0.85);
+  const dividendsPaid = randomRange(Math.floor(maxDividend * 0.3), maxDividend);
 
   const inventory = Math.round((costOfSales / 365) * randomRange(40, 80));
   const receivables = Math.round((revenue / 365) * randomRange(30, 60));
@@ -49,7 +54,7 @@ function generateRatioData() {
   const retainedEarnings = totalEquity - shareCapital;
 
   return {
-    pl: { revenue, costOfSales, grossProfit, operatingExpenses, operatingProfit, financeCosts, profitBeforeTax, tax, profitForYear },
+    pl: { revenue, costOfSales, grossProfit, operatingExpenses, operatingProfit, financeCosts, profitBeforeTax, tax, profitForYear, dividendsPaid },
     sfp: {
       nca,
       ca: { inventory, receivables, cash, total: totalCa },
@@ -70,7 +75,7 @@ function fmt(n: number): string {
 
 function RatiosPage() {
   const navigate = useNavigate();
-const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
+  const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
   const [ratioData, setRatioData] = useState<ReturnType<typeof generateRatioData> | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("statements");
@@ -107,6 +112,8 @@ const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
     recDays: (sfp.ca.receivables / pl.revenue) * 365,
     payDays: (sfp.cl.payables / pl.costOfSales) * 365,
     gearing: (sfp.ncl.loan / capitalEmployed) * 100,
+    interestCover: pl.financeCosts > 0 ? pl.operatingProfit / pl.financeCosts : 0,
+    dividendCover: pl.dividendsPaid > 0 ? pl.profitForYear / pl.dividendsPaid : 0,
   };
 
   return (
@@ -187,24 +194,32 @@ const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
                 <h3 className="font-bold text-primary mb-2 border-b border-border/50 pb-1">Liquidity</h3>
                 <ul className="space-y-2 text-sm">
                   <li><span className="font-semibold">Current Ratio:</span> Current Assets ÷ Current Liabilities</li>
-                  <li><span className="font-semibold">Quick Ratio:</span> (Current Assets - Inventory) ÷ Current Liabilities</li>
+                  {difficulty !== "easy" && (
+                    <li><span className="font-semibold">Quick Ratio:</span> (Current Assets - Inventory) ÷ Current Liabilities</li>
+                  )}
                 </ul>
               </div>
-              <div>
-                <h3 className="font-bold text-primary mb-2 border-b border-border/50 pb-1">Efficiency</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><span className="font-semibold">Inventory Days:</span> (Closing Inventory ÷ Cost of Sales) × 365</li>
-                  <li><span className="font-semibold">Receivables Days:</span> (Trade Receivables ÷ Revenue) × 365</li>
-                  <li><span className="font-semibold">Payables Days:</span> (Trade Payables ÷ Cost of Sales) × 365</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-bold text-primary mb-2 border-b border-border/50 pb-1">Leverage</h3>
-                <ul className="space-y-2 text-sm">
-                  <li><span className="font-semibold">Gearing:</span> [Non-Current Liabilities ÷ Capital Employed] × 100</li>
-                  <li className="text-muted-foreground text-xs mt-2">*Note: Capital Employed = Total Equity + Non-Current Liabilities</li>
-                </ul>
-              </div>
+              {difficulty !== "easy" && (
+                <div>
+                  <h3 className="font-bold text-primary mb-2 border-b border-border/50 pb-1">Efficiency</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li><span className="font-semibold">Inventory Days:</span> (Closing Inventory ÷ Cost of Sales) × 365</li>
+                    <li><span className="font-semibold">Receivables Days:</span> (Trade Receivables ÷ Revenue) × 365</li>
+                    <li><span className="font-semibold">Payables Days:</span> (Trade Payables ÷ Cost of Sales) × 365</li>
+                  </ul>
+                </div>
+              )}
+              {difficulty === "hard" && (
+                <div>
+                  <h3 className="font-bold text-primary mb-2 border-b border-border/50 pb-1">Leverage & Investment</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li><span className="font-semibold">Gearing:</span> [Non-Current Liabilities ÷ Capital Employed] × 100</li>
+                    <li><span className="font-semibold">Interest Cover:</span> Operating Profit ÷ Finance Costs</li>
+                    <li><span className="font-semibold">Dividend Cover:</span> Profit for the year ÷ Dividends Paid</li>
+                    <li className="text-muted-foreground text-xs mt-2">*Note: Capital Employed = Total Equity + Non-Current Liabilities</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -228,6 +243,13 @@ const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
                   <tr className="border-t-4 border-double border-foreground font-bold"><td className="py-2">Profit for the year</td><td className="text-right font-mono">{fmt(pl.profitForYear)}</td></tr>
                 </tbody>
               </table>
+              
+              {/* Show dividend note only on Hard Mode */}
+              {difficulty === "hard" && (
+                <div className="mt-4 p-3 bg-secondary/30 rounded-lg text-sm text-muted-foreground border border-border">
+                  <span className="font-bold text-primary">Note:</span> Ordinary dividends of £{fmt(pl.dividendsPaid)}k were paid during the year.
+                </div>
+              )}
             </div>
 
             {/* SFP Table */}
@@ -282,23 +304,29 @@ const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
               <span className="font-bold text-primary block mb-1">Liquidity</span>
               <ul className="list-disc list-inside text-muted-foreground">
                 <li>Current Ratio</li>
-                <li>Quick Ratio</li>
+                {difficulty !== "easy" && <li>Quick Ratio</li>}
               </ul>
             </div>
-            <div>
-              <span className="font-bold text-primary block mb-1">Efficiency</span>
-              <ul className="list-disc list-inside text-muted-foreground">
-                <li>Inventory Days</li>
-                <li>Receivables Days</li>
-                <li>Payables Days</li>
-              </ul>
-            </div>
-            <div>
-              <span className="font-bold text-primary block mb-1">Leverage</span>
-              <ul className="list-disc list-inside text-muted-foreground">
-                <li>Gearing Ratio</li>
-              </ul>
-            </div>
+            {difficulty !== "easy" && (
+              <div>
+                <span className="font-bold text-primary block mb-1">Efficiency</span>
+                <ul className="list-disc list-inside text-muted-foreground">
+                  <li>Inventory Days</li>
+                  <li>Receivables Days</li>
+                  <li>Payables Days</li>
+                </ul>
+              </div>
+            )}
+            {difficulty === "hard" && (
+              <div>
+                <span className="font-bold text-primary block mb-1">Leverage & Inv.</span>
+                <ul className="list-disc list-inside text-muted-foreground">
+                  <li>Gearing Ratio</li>
+                  <li>Interest Cover</li>
+                  <li>Dividend Cover</li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
@@ -326,32 +354,40 @@ const [scenario, setScenario] = useState<GeneratedScenario | null>(null);
                 <table className="w-full text-sm">
                   <tbody>
                     <tr className="border-b border-border/30"><td className="py-2">Current Ratio</td><td className="text-right font-mono">{answers.currentRatio.toFixed(2)} : 1</td></tr>
-                    <tr className="border-b border-border/30"><td className="py-2">Quick Ratio</td><td className="text-right font-mono">{answers.quickRatio.toFixed(2)} : 1</td></tr>
+                    {difficulty !== "easy" && (
+                      <tr className="border-b border-border/30"><td className="py-2">Quick Ratio</td><td className="text-right font-mono">{answers.quickRatio.toFixed(2)} : 1</td></tr>
+                    )}
                   </tbody>
                 </table>
               </div>
 
               {/* Efficiency Answers */}
-              <div>
-                <h3 className="font-bold text-primary mb-3">Efficiency</h3>
-                <table className="w-full text-sm">
-                  <tbody>
-                    <tr className="border-b border-border/30"><td className="py-2">Inventory Days</td><td className="text-right font-mono">{Math.round(answers.invDays)} days</td></tr>
-                    <tr className="border-b border-border/30"><td className="py-2">Receivables Days</td><td className="text-right font-mono">{Math.round(answers.recDays)} days</td></tr>
-                    <tr className="border-b border-border/30"><td className="py-2">Payables Days</td><td className="text-right font-mono">{Math.round(answers.payDays)} days</td></tr>
-                  </tbody>
-                </table>
-              </div>
+              {difficulty !== "easy" && (
+                <div>
+                  <h3 className="font-bold text-primary mb-3">Efficiency</h3>
+                  <table className="w-full text-sm">
+                    <tbody>
+                      <tr className="border-b border-border/30"><td className="py-2">Inventory Days</td><td className="text-right font-mono">{Math.round(answers.invDays)} days</td></tr>
+                      <tr className="border-b border-border/30"><td className="py-2">Receivables Days</td><td className="text-right font-mono">{Math.round(answers.recDays)} days</td></tr>
+                      <tr className="border-b border-border/30"><td className="py-2">Payables Days</td><td className="text-right font-mono">{Math.round(answers.payDays)} days</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-              {/* Leverage Answers */}
-              <div>
-                <h3 className="font-bold text-primary mb-3">Leverage</h3>
-                <table className="w-full text-sm">
-                  <tbody>
-                    <tr className="border-b border-border/30"><td className="py-2">Gearing Ratio</td><td className="text-right font-mono">{answers.gearing.toFixed(2)}%</td></tr>
-                  </tbody>
-                </table>
-              </div>
+              {/* Leverage & Investment Answers */}
+              {difficulty === "hard" && (
+                <div>
+                  <h3 className="font-bold text-primary mb-3">Leverage & Investment</h3>
+                  <table className="w-full text-sm">
+                    <tbody>
+                      <tr className="border-b border-border/30"><td className="py-2">Gearing Ratio</td><td className="text-right font-mono">{answers.gearing.toFixed(2)}%</td></tr>
+                      <tr className="border-b border-border/30"><td className="py-2">Interest Cover</td><td className="text-right font-mono">{answers.interestCover.toFixed(2)} times</td></tr>
+                      <tr className="border-b border-border/30"><td className="py-2">Dividend Cover</td><td className="text-right font-mono">{answers.dividendCover.toFixed(2)} times</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
             </div>
           </div>
