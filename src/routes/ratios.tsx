@@ -81,13 +81,23 @@ function RatiosPage() {
   const [activeTab, setActiveTab] = useState<Tab>("statements");
   const [hintsEnabled, setHintsEnabled] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
     const stored = sessionStorage.getItem("currentScenario");
     const storedHints = sessionStorage.getItem("hintsEnabled");
+    const storedRatioData = sessionStorage.getItem("currentRatioData");
+
     if (stored) {
       setScenario(JSON.parse(stored));
-      setRatioData(generateRatioData());
       if (storedHints) setHintsEnabled(JSON.parse(storedHints));
+
+      // --- THE FIX: Check if data already exists before generating ---
+      if (storedRatioData) {
+        setRatioData(JSON.parse(storedRatioData));
+      } else {
+        const newData = generateRatioData();
+        setRatioData(newData);
+        sessionStorage.setItem("currentRatioData", JSON.stringify(newData));
+      }
     } else {
       navigate({ to: "/setup" });
     }
