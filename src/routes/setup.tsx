@@ -28,6 +28,7 @@ function SetupPage() {
       sessionStorage.setItem("currentScenario", JSON.stringify(part1));
       sessionStorage.setItem("cashFlowScenario", JSON.stringify(part2));
       sessionStorage.setItem("hintsEnabled", JSON.stringify(hintsEnabled));
+      sessionStorage.removeItem("currentRatioData");
       navigate({ to: "/question" });
     }, 300);
   };
