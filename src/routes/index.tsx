@@ -38,9 +38,19 @@ function Index() {
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               Master Accounting
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              LedgerLab creates unlimited, randomised accounting practise questions to help you practise Trial Balances, Profit or Loss, SOCE and Statements of Financial Position, each scenario is realistic structured and flows clearly from start to finish. LedgerLab helps you sharpen your exam technique, and become a master of accounting. 
-            </p>
+            
+            {/* Updated text section split into paragraphs */}
+            <div className="text-xl text-muted-foreground mb-8 leading-relaxed space-y-4">
+              <p>
+                LedgerLab creates unlimited, randomised accounting practise questions to help you practise Trial Balances, Profit or Loss, SOCE and Statements of Financial Position.
+              </p>
+              <p>
+                Each scenario is realistically structured and flows clearly from start to finish.
+              </p>
+              <p>
+                LedgerLab helps you sharpen your exam technique, and become a master of accounting. 
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
               <div className="ledger-card text-left">
