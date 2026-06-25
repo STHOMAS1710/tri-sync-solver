@@ -117,9 +117,9 @@ function rand(min: number, max: number): number {
 }
 
 function companyName(): string {
-  const a = ["Apex", "Zenith", "Stellar", "Quantum", "Horizon", "Nexus", "Pinnacle", "Aurora"];
-  const n = ["Tech", "Solutions", "Ventures", "Dynamics", "Systems", "Industries", "Group"];
-  const s = ["plc", "Ltd"];
+  const a = ["Apex", "Zenith", "Stellar", "Quantum", "Horizon", "Nexus", "Pinnacle", "Aurora", "Echo", "Atlas", "Lumina", "Quantum"];
+  const n = ["Tech", "Solutions", "Ventures", "Dynamics", "Systems", "Industries", "Group", "Global", "Partners", "Analytics", "Holdings"];
+  const s = ["Plc", "Ltd"];
   return `${a[rand(0, a.length - 1)]} ${n[rand(0, n.length - 1)]} ${s[rand(0, s.length - 1)]}`;
 }
 
