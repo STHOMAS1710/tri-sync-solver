@@ -417,6 +417,3 @@ function RatiosPage() {
     </div>
   );
 }
-    </div>
-  );
-}
