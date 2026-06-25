@@ -381,4 +381,35 @@ function RatiosPage() {
                   <h3 className="font-bold text-primary mb-3">Leverage & Investment</h3>
                   <table className="w-full text-sm">
                     <tbody>
-                      <tr className="border-b border-border/30"><td className="py-2">Gearing Ratio</td><td className="text-right font-
+                      <tr className="border-b border-border/30"><td className="py-2">Gearing Ratio</td><td className="text-right font-mono">{answers.gearing.toFixed(2)}%</td></tr>
+                      <tr className="border-b border-border/30"><td className="py-2">Interest Cover</td><td className="text-right font-mono">{answers.interestCover.toFixed(2)} times</td></tr>
+                      <tr className="border-b border-border/30"><td className="py-2">Dividend Cover</td><td className="text-right font-mono">{answers.dividendCover.toFixed(2)} times</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* --- NEW FOOTER NAVIGATION --- */}
+      <div className="border-t border-border/30 bg-background/50 mt-8">
+        <div className="container py-8 flex flex-col items-center justify-center text-center">
+          <h3 className="text-xl font-bold mb-2">Ready for another challenge?</h3>
+          <p className="text-sm text-muted-foreground mb-6">
+            Practice makes perfect. Generate a new randomized scenario.
+          </p>
+          <Link 
+            to="/setup" 
+            className="bg-primary text-primary-foreground hover:opacity-90 transition-opacity px-8 py-3 rounded-lg font-semibold text-lg inline-flex items-center justify-center"
+          >
+            Generate New Question
+          </Link>
+        </div>
+      </div>
+
+    </div>
+  );
+}
