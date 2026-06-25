@@ -34,9 +34,9 @@ function SetupPage() {
   };
 
   const options: { value: Difficulty; label: string; description: string; icon: string }[] = [
-    { value: "easy", label: "Easy", description: "3–4 adjustments\nSimpler accounts", icon: "🌱" },
-    { value: "medium", label: "Medium", description: "5–6 adjustments\nBalanced complexity", icon: "📊" },
-    { value: "hard", label: "Hard", description: "6–7 adjustments\nAdvanced scenarios", icon: "🚀" },
+    { value: "easy", label: "Easy", description: "Straightforward trial balances, simple cash flow movements, and basic profitability and liquidity ratios. Perfect for building foundational confidence.", icon: "🌱" },
+    { value: "medium", label: "Medium", description: "Introduces standard accruals, prepayments, and asset disposals. Cash flow requires more adjustment, and you'll need to calculate efficiency ratios like inventory and receivable days.", icon: "📊" },
+    { value: "hard", label: "Hard", description: ""Exam-level complexity. Features hidden depreciation figures, strict dividend caps, and complex tax calculations. Introduces advanced leverage ratios, requiring you to calculate gearing, interest cover, and dividend cover.", icon: "🚀" },
   ];
 
   return (
@@ -82,8 +82,8 @@ function SetupPage() {
                 </h2>
                 <p className="text-muted-foreground">
                   {hintsEnabled
-                    ? "Hints enabled — you'll see guidance for each adjustment."
-                    : "Hints disabled — exam mode."}
+                    ? "Hints enabled — Enable built-in study aids. Adds real-time balancing checks for your financial statements and unlocks a full formula reference guide for the ratios section."
+                    : "Hints disabled — Exam mode."}
                 </p>
               </div>
               <button
