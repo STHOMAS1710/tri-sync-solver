@@ -36,7 +36,7 @@ function SetupPage() {
   const options: { value: Difficulty; label: string; description: string; icon: string }[] = [
     { value: "easy", label: "Easy", description: "Straightforward trial balances, simple cash flow movements, and basic profitability and liquidity ratios. Perfect for building foundational confidence.", icon: "🌱" },
     { value: "medium", label: "Medium", description: "Introduces standard accruals, prepayments, and asset disposals. Cash flow requires more adjustment, and you'll need to calculate efficiency ratios like inventory and receivable days.", icon: "📊" },
-    { value: "hard", label: "Hard", description: ""Exam-level complexity. Features hidden depreciation figures, strict dividend caps, and complex tax calculations. Introduces advanced leverage ratios, requiring you to calculate gearing, interest cover, and dividend cover.", icon: "🚀" },
+    { value: "hard", label: "Hard", description: "Exam-level complexity. Features hidden depreciation figures, strict dividend caps, and complex tax calculations. Introduces advanced leverage ratios, requiring you to calculate gearing, interest cover, and dividend cover.", icon: "🚀" },
   ];
 
   return (
