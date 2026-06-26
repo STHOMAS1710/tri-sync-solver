@@ -1,9 +1,6 @@
-import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react"; 
-// (Your existing icons might be different, just make sure HelpCircle is in there!)
-
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Eye, Lightbulb } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Lightbulb, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
 import {
   computeStatements,
   type GeneratedScenario,
@@ -140,8 +137,8 @@ function QuestionPage() {
         {activeTab === "trialBalance" && (
           <div className="ledger-card">
             <h2 className="text-xl font-bold mb-4">Trial Balance as at {yearEnd}</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto pb-2">
+              <table className="w-full text-xs sm:text-sm min-w-[320px]">
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-left py-2 px-4 font-semibold">Account</th>
@@ -243,108 +240,114 @@ function AnswersPanel({ computed, dividendsPaid, yearEnd }: { computed: Computed
       {/* P&L */}
       <div className="ledger-card answer-card">
         <h2 className="text-xl font-bold mb-4">Answer · Statement of Profit or Loss for the year ended {yearEnd}</h2>
-        <table className="w-full text-sm">
-          <thead><tr className="text-muted-foreground"><th className="text-left">£000</th><th className="text-right"></th></tr></thead>
-          <tbody>
-            <Row label="Revenue" value={pl.revenue} />
-            <Row label="Cost of sales" value={-pl.costOfSales} />
-            <Row label="Gross profit" value={pl.grossProfit} bold />
-            {pl.operatingExpenses.map((e, i) => (
-              <Row key={i} label={e.name} value={-e.amount} indent />
-            ))}
-            <Row label="Total operating expenses" value={-pl.totalOperatingExpenses} />
-            <Row label="Operating profit" value={pl.operatingProfit} bold />
-            {pl.financeExpenses > 0 && <Row label="Finance expenses" value={-pl.financeExpenses} />}
-            <Row label="Profit before tax" value={pl.profitBeforeTax} bold />
-            <Row label="Income tax expense" value={-pl.taxExpense} />
-            <Row label="Profit for the year" value={pl.profitForYear} bold />
-          </tbody>
-        </table>
+        <div className="overflow-x-auto pb-2">
+          <table className="w-full text-xs sm:text-sm min-w-[280px]">
+            <thead><tr className="text-muted-foreground"><th className="text-left">£000</th><th className="text-right"></th></tr></thead>
+            <tbody>
+              <Row label="Revenue" value={pl.revenue} />
+              <Row label="Cost of sales" value={-pl.costOfSales} />
+              <Row label="Gross profit" value={pl.grossProfit} bold />
+              {pl.operatingExpenses.map((e, i) => (
+                <Row key={i} label={e.name} value={-e.amount} indent />
+              ))}
+              <Row label="Total operating expenses" value={-pl.totalOperatingExpenses} />
+              <Row label="Operating profit" value={pl.operatingProfit} bold />
+              {pl.financeExpenses > 0 && <Row label="Finance expenses" value={-pl.financeExpenses} />}
+              <Row label="Profit before tax" value={pl.profitBeforeTax} bold />
+              <Row label="Income tax expense" value={-pl.taxExpense} />
+              <Row label="Profit for the year" value={pl.profitForYear} bold />
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* SOCE */}
       <div className="ledger-card answer-card">
         <h2 className="text-xl font-bold mb-4">Answer · Statement of Changes in Equity</h2>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-muted-foreground border-b border-border">
-              <th className="text-left py-2">£000</th>
-              <th className="text-right py-2">Share capital</th>
-              <th className="text-right py-2">Retained earnings</th>
-              <th className="text-right py-2">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-border/30">
-              <td className="py-1.5">Balance at start of year</td>
-              <td className="text-right font-mono">{soce.openingShareCapital.toLocaleString()}</td>
-              <td className="text-right font-mono">{soce.openingRetainedEarnings.toLocaleString()}</td>
-              <td className="text-right font-mono">{(soce.openingShareCapital + soce.openingRetainedEarnings).toLocaleString()}</td>
-            </tr>
-            <tr className="border-b border-border/30">
-              <td className="py-1.5">Profit for the year</td>
-              <td className="text-right font-mono">—</td>
-              <td className="text-right font-mono">{soce.profitForYear.toLocaleString()}</td>
-              <td className="text-right font-mono">{soce.profitForYear.toLocaleString()}</td>
-            </tr>
-            {dividendsPaid > 0 && (
-              <tr className="border-b border-border/30">
-                <td className="py-1.5">Dividends paid</td>
-                <td className="text-right font-mono">—</td>
-                <td className="text-right font-mono">({dividendsPaid.toLocaleString()})</td>
-                <td className="text-right font-mono">({dividendsPaid.toLocaleString()})</td>
+        <div className="overflow-x-auto pb-2">
+          <table className="w-full text-xs sm:text-sm min-w-[400px]">
+            <thead>
+              <tr className="text-muted-foreground border-b border-border">
+                <th className="text-left py-2">£000</th>
+                <th className="text-right py-2">Share capital</th>
+                <th className="text-right py-2">Retained earnings</th>
+                <th className="text-right py-2">Total</th>
               </tr>
-            )}
-            <tr className="border-t-2 border-foreground font-bold">
-              <td className="py-2">Balance at end of year</td>
-              <td className="text-right font-mono">{soce.closingShareCapital.toLocaleString()}</td>
-              <td className="text-right font-mono">{soce.closingRetainedEarnings.toLocaleString()}</td>
-              <td className="text-right font-mono">{soce.totalEquity.toLocaleString()}</td>
-            </tr>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border/30">
+                <td className="py-1.5">Balance at start of year</td>
+                <td className="text-right font-mono">{soce.openingShareCapital.toLocaleString()}</td>
+                <td className="text-right font-mono">{soce.openingRetainedEarnings.toLocaleString()}</td>
+                <td className="text-right font-mono">{(soce.openingShareCapital + soce.openingRetainedEarnings).toLocaleString()}</td>
+              </tr>
+              <tr className="border-b border-border/30">
+                <td className="py-1.5">Profit for the year</td>
+                <td className="text-right font-mono">—</td>
+                <td className="text-right font-mono">{soce.profitForYear.toLocaleString()}</td>
+                <td className="text-right font-mono">{soce.profitForYear.toLocaleString()}</td>
+              </tr>
+              {dividendsPaid > 0 && (
+                <tr className="border-b border-border/30">
+                  <td className="py-1.5">Dividends paid</td>
+                  <td className="text-right font-mono">—</td>
+                  <td className="text-right font-mono">({dividendsPaid.toLocaleString()})</td>
+                  <td className="text-right font-mono">({dividendsPaid.toLocaleString()})</td>
+                </tr>
+              )}
+              <tr className="border-t-2 border-foreground font-bold">
+                <td className="py-2">Balance at end of year</td>
+                <td className="text-right font-mono">{soce.closingShareCapital.toLocaleString()}</td>
+                <td className="text-right font-mono">{soce.closingRetainedEarnings.toLocaleString()}</td>
+                <td className="text-right font-mono">{soce.totalEquity.toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* SFP */}
       <div className="ledger-card answer-card">
         <h2 className="text-xl font-bold mb-4">Answer · Statement of Financial Position as at {yearEnd}</h2>
-        <table className="w-full text-sm">
-          <tbody>
-            <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>NON-CURRENT ASSETS</td></tr>
-            {sfp.nonCurrentAssets.map((r, i) => (
-              <tr key={i} className="border-b border-border/30">
-                <td className="py-1.5 pl-4">{r.name} (cost {r.cost.toLocaleString()}, dep {r.depn.toLocaleString()})</td>
-                <td className="text-right font-mono">{r.nbv.toLocaleString()}</td>
-              </tr>
-            ))}
-            <Row label="Total non-current assets" value={sfp.totalNonCurrentAssets} bold />
+        <div className="overflow-x-auto pb-2">
+          <table className="w-full text-xs sm:text-sm min-w-[320px]">
+            <tbody>
+              <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>NON-CURRENT ASSETS</td></tr>
+              {sfp.nonCurrentAssets.map((r, i) => (
+                <tr key={i} className="border-b border-border/30">
+                  <td className="py-1.5 pl-4">{r.name} (cost {r.cost.toLocaleString()}, dep {r.depn.toLocaleString()})</td>
+                  <td className="text-right font-mono">{r.nbv.toLocaleString()}</td>
+                </tr>
+              ))}
+              <Row label="Total non-current assets" value={sfp.totalNonCurrentAssets} bold />
 
-            <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>CURRENT ASSETS</td></tr>
-            <Row label="Inventory (closing)" value={sfp.currentAssets.inventory} indent />
-            <Row label={`Receivables (${sfp.currentAssets.receivables.toLocaleString()} − allowance ${sfp.currentAssets.allowance.toLocaleString()})`} value={sfp.currentAssets.netReceivables} indent />
-            {sfp.currentAssets.prepayments > 0 && <Row label="Prepayments" value={sfp.currentAssets.prepayments} indent />}
-            <Row label="Cash at bank" value={sfp.currentAssets.cash} indent />
-            <Row label="Total current assets" value={sfp.currentAssets.total} bold />
+              <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>CURRENT ASSETS</td></tr>
+              <Row label="Inventory (closing)" value={sfp.currentAssets.inventory} indent />
+              <Row label={`Receivables (${sfp.currentAssets.receivables.toLocaleString()} − allowance ${sfp.currentAssets.allowance.toLocaleString()})`} value={sfp.currentAssets.netReceivables} indent />
+              {sfp.currentAssets.prepayments > 0 && <Row label="Prepayments" value={sfp.currentAssets.prepayments} indent />}
+              <Row label="Cash at bank" value={sfp.currentAssets.cash} indent />
+              <Row label="Total current assets" value={sfp.currentAssets.total} bold />
 
-            <Row label="TOTAL ASSETS" value={sfp.totalAssets} bold />
+              <Row label="TOTAL ASSETS" value={sfp.totalAssets} bold />
 
-            <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>EQUITY</td></tr>
-            <Row label="Ordinary share capital" value={sfp.equity.shareCapital} indent />
-            <Row label="Retained earnings (from SOCE)" value={sfp.equity.retainedEarnings} indent />
-            <Row label="Total equity" value={sfp.equity.total} bold />
+              <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>EQUITY</td></tr>
+              <Row label="Ordinary share capital" value={sfp.equity.shareCapital} indent />
+              <Row label="Retained earnings (from SOCE)" value={sfp.equity.retainedEarnings} indent />
+              <Row label="Total equity" value={sfp.equity.total} bold />
 
-            <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>NON-CURRENT LIABILITIES</td></tr>
-            <Row label="8% Debentures" value={sfp.nonCurrentLiabilities.debentures} indent />
+              <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>NON-CURRENT LIABILITIES</td></tr>
+              <Row label="8% Debentures" value={sfp.nonCurrentLiabilities.debentures} indent />
 
-            <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>CURRENT LIABILITIES</td></tr>
-            <Row label="Trade payables" value={sfp.currentLiabilities.payables} indent />
-            {sfp.currentLiabilities.accruals > 0 && <Row label="Accrued expenses" value={sfp.currentLiabilities.accruals} indent />}
-            <Row label="Income tax payable" value={sfp.currentLiabilities.taxPayable} indent />
-            <Row label="Total liabilities" value={sfp.nonCurrentLiabilities.total + sfp.currentLiabilities.total} bold />
+              <tr className="bg-secondary/40 font-bold"><td className="py-2 px-2" colSpan={2}>CURRENT LIABILITIES</td></tr>
+              <Row label="Trade payables" value={sfp.currentLiabilities.payables} indent />
+              {sfp.currentLiabilities.accruals > 0 && <Row label="Accrued expenses" value={sfp.currentLiabilities.accruals} indent />}
+              <Row label="Income tax payable" value={sfp.currentLiabilities.taxPayable} indent />
+              <Row label="Total liabilities" value={sfp.nonCurrentLiabilities.total + sfp.currentLiabilities.total} bold />
 
-            <Row label="TOTAL EQUITY AND LIABILITIES" value={sfp.totalEquityAndLiabilities} bold />
-          </tbody>
-        </table>
+              <Row label="TOTAL EQUITY AND LIABILITIES" value={sfp.totalEquityAndLiabilities} bold />
+            </tbody>
+          </table>
+        </div>
         <div className={`mt-4 p-3 rounded-lg text-sm border ${lhs === sfp.equity.total ? "bg-emerald-900/20 border-emerald-700/50 text-emerald-300" : "bg-red-900/20 border-red-700/50 text-red-300"}`}>
           {lhs === sfp.equity.total
             ? `✓ Validation: Total Assets − Total Liabilities = £${lhs.toLocaleString()}k = Total Equity from SOCE`
