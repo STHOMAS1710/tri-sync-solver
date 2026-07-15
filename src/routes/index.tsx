@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
+import myLogo from "../logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LedgerLab — Practice Accounting Questions" },
+      { title: "LedgerLaboratory — Practice Accounting Questions" },
       { name: "description", content: "Generate unlimited randomised, fully balanced accounting practice questions: Trial Balance, Financial Statements, Cash Flow and Ratios." },
-      { property: "og:title", content: "LedgerLab" },
+      { property: "og:title", content: "LedgerLaboratory" },
       { property: "og:description", content: "Master accounting with unlimited practice scenarios." },
     ],
   }),
@@ -20,12 +21,12 @@ function Index() {
       <nav className="border-b border-border/30">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
-        <img
-          src="/logo.png"
-          alt="LedgerLab logo"
-          className="site-logo-mark"
-        />
-            <span className="text-xl font-bold">LedgerLab</span>
+            <img
+              src={myLogo}
+              alt="LedgerLaboratory logo"
+              className="site-logo-mark"
+            />
+            <span className="text-xl font-bold">LedgerLaboratory</span>
           </div>
           <div className="text-sm text-muted-foreground">Accounting Revision Platform</div>
         </div>
@@ -39,16 +40,15 @@ function Index() {
               Master Accounting
             </h1>
             
-            {/* Updated text section split into paragraphs */}
             <div className="text-xl text-muted-foreground mb-8 leading-relaxed space-y-4">
               <p>
-                LedgerLab creates unlimited, randomised accounting practise questions to help you practise Trial Balances, Profit or Loss, SOCE and Statements of Financial Position.
+                LedgerLaboratory creates unlimited, randomised accounting practise questions to help you practise Trial Balances, Profit or Loss, SOCE and Statements of Financial Position.
               </p>
               <p>
                 Each scenario is realistically structured and flows clearly from start to finish.
               </p>
               <p>
-                LedgerLab helps you sharpen your exam technique, and become a master of accounting. 
+                LedgerLaboratory helps you sharpen your exam technique, and become a master of accounting. 
               </p>
             </div>
 
@@ -79,7 +79,7 @@ function Index() {
       </section>
 
       <footer className="border-t border-border/30 py-8 text-center text-sm text-muted-foreground">
-        <div className="container">LedgerLab © 2026 — Triple-Statement Integration</div>
+        <div className="container">LedgerLaboratory © 2026 — Triple-Statement Integration</div>
       </footer>
     </div>
   );
