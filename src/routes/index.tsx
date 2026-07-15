@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
-import myLogo from "../logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,7 +21,7 @@ function Index() {
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <img
-              src={myLogo}
+              src="/logo.png"
               alt="LedgerLaboratory logo"
               className="site-logo-mark"
             />
